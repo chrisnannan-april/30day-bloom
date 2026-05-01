@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <!-- Soft pastel sunset background -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB89E"/>
+      <stop offset="35%" stop-color="#FFD894"/>
+      <stop offset="65%" stop-color="#FFC1D9"/>
+      <stop offset="100%" stop-color="#D4B5FF"/>
+    </linearGradient>
+    
+    <!-- Soft warm overlay -->
+    <radialGradient id="warmth" cx="32%" cy="28%" r="55%">
+      <stop offset="0%" stop-color="#FFFBE8" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#FFE5C0" stop-opacity="0.0"/>
+    </radialGradient>
+    
+    <!-- Center disc gradient -->
+    <radialGradient id="centerGrad" cx="40%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#FFFAEB"/>
+      <stop offset="100%" stop-color="#FFE5C0"/>
+    </radialGradient>
+    
+    <!-- Petal gradients -->
+    <radialGradient id="p1" cx="50%" cy="70%" r="60%">
+      <stop offset="0%" stop-color="#FFD8B5"/>
+      <stop offset="100%" stop-color="#FF8A65"/>
+    </radialGradient>
+    <radialGradient id="p2" cx="50%" cy="70%" r="60%">
+      <stop offset="0%" stop-color="#FFE48A"/>
+      <stop offset="100%" stop-color="#F4B942"/>
+    </radialGradient>
+    <radialGradient id="p3" cx="50%" cy="70%" r="60%">
+      <stop offset="0%" stop-color="#B5F2D8"/>
+      <stop offset="100%" stop-color="#5DC9A2"/>
+    </radialGradient>
+    <radialGradient id="p4" cx="50%" cy="70%" r="60%">
+      <stop offset="0%" stop-color="#A8DDD8"/>
+      <stop offset="100%" stop-color="#5BB5B0"/>
+    </radialGradient>
+    <radialGradient id="p5" cx="50%" cy="70%" r="60%">
+      <stop offset="0%" stop-color="#D9C3FF"/>
+      <stop offset="100%" stop-color="#9F7AD9"/>
+    </radialGradient>
+    <radialGradient id="p6" cx="50%" cy="70%" r="60%">
+      <stop offset="0%" stop-color="#FFD4E1"/>
+      <stop offset="100%" stop-color="#F08FB0"/>
+    </radialGradient>
+    
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+  
+  <!-- Rounded square background (iOS will mask) -->
+  <rect width="1024" height="1024" fill="url(#bgGrad)" rx="225" ry="225"/>
+  <rect width="1024" height="1024" fill="url(#warmth)" rx="225" ry="225"/>
+  
+  <!-- Decorative flowers in corners (small, soft) -->
+  <g opacity="0.32" transform="translate(120 130)">
+    <g transform="rotate(-15)">
+      <circle cx="0" cy="-22" r="14" fill="#FFFAEB"/>
+      <circle cx="21" cy="-7" r="14" fill="#FFFAEB"/>
+      <circle cx="13" cy="18" r="14" fill="#FFFAEB"/>
+      <circle cx="-13" cy="18" r="14" fill="#FFFAEB"/>
+      <circle cx="-21" cy="-7" r="14" fill="#FFFAEB"/>
+      <circle cx="0" cy="0" r="9" fill="#FFD894"/>
+    </g>
+  </g>
+  <g opacity="0.32" transform="translate(890 870)">
+    <g transform="rotate(20)">
+      <circle cx="0" cy="-26" r="16" fill="#FFFAEB"/>
+      <circle cx="25" cy="-8" r="16" fill="#FFFAEB"/>
+      <circle cx="15" cy="22" r="16" fill="#FFFAEB"/>
+      <circle cx="-15" cy="22" r="16" fill="#FFFAEB"/>
+      <circle cx="-25" cy="-8" r="16" fill="#FFFAEB"/>
+      <circle cx="0" cy="0" r="10" fill="#F4B942"/>
+    </g>
+  </g>
+  
+  <!-- Floating leaves -->
+  <g opacity="0.28">
+    <ellipse cx="850" cy="180" rx="36" ry="14" fill="#5DC9A2" transform="rotate(-25 850 180)"/>
+    <ellipse cx="160" cy="850" rx="32" ry="12" fill="#9F7AD9" transform="rotate(35 160 850)"/>
+  </g>
+  
+  <!-- Subtle shadow under flower -->
+  <ellipse cx="512" cy="640" rx="280" ry="40" fill="#000" opacity="0.07" filter="url(#softShadow)"/>
+  
+  <!-- Main flower - 6 petals -->
+  <g transform="translate(512 500)">
+    <!-- Each petal is an ellipse, drawn from center outward -->
+    <g transform="rotate(0)"><ellipse cx="0" cy="-180" rx="105" ry="155" fill="url(#p1)"/></g>
+    <g transform="rotate(60)"><ellipse cx="0" cy="-180" rx="105" ry="155" fill="url(#p2)"/></g>
+    <g transform="rotate(120)"><ellipse cx="0" cy="-180" rx="105" ry="155" fill="url(#p3)"/></g>
+    <g transform="rotate(180)"><ellipse cx="0" cy="-180" rx="105" ry="155" fill="url(#p4)"/></g>
+    <g transform="rotate(240)"><ellipse cx="0" cy="-180" rx="105" ry="155" fill="url(#p5)"/></g>
+    <g transform="rotate(300)"><ellipse cx="0" cy="-180" rx="105" ry="155" fill="url(#p6)"/></g>
+    
+    <!-- Center disc -->
+    <circle r="125" fill="url(#centerGrad)"/>
+    <circle r="125" fill="none" stroke="#FFE5C0" stroke-width="3"/>
+    
+    <!-- "30" Number -->
+    <text x="0" y="36" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="160" font-weight="700" font-style="italic" fill="#7A4534">30</text>
+    
+    <!-- Tiny highlight -->
+    <ellipse cx="-30" cy="-50" rx="35" ry="22" fill="#FFFFFF" opacity="0.55"/>
+  </g>
+  
+  <!-- "RUONAN" text at bottom -->
+  <text x="512" y="900" text-anchor="middle" font-family="Georgia, serif" font-size="62" font-weight="600" font-style="italic" fill="#FFFFFF" opacity="0.92" letter-spacing="6">Ruonan</text>
+  
+  <!-- Tiny dot accent -->
+  <circle cx="512" cy="935" r="4" fill="#FFFFFF" opacity="0.85"/>
+  
+</svg>

@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Ruonan">
+<meta name="theme-color" content="#FF6B47">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<title>三十日蜕变 · Ruonan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --coral: #FF6B47;
+  --coral-dark: #E54B27;
+  --sunshine: #FFD23F;
+  --mint: #06D6A0;
+  --mint-dark: #04A87E;
+  --sky: #4ECDC4;
+  --pink: #FF6B9D;
+  --purple: #B57BFF;
+  --cream: #FFF6E6;
+  --paper: #FFFFFF;
+  --ink: #1F2937;
+  --ink-soft: #6B7280;
+  --ink-fade: #9CA3AF;
+  --warm: #FFF1D6;
+}
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  padding-bottom: 60px;
+  background-image: 
+    radial-gradient(circle at 8% 8%, rgba(255, 107, 71, 0.18) 0%, transparent 35%),
+    radial-gradient(circle at 92% 18%, rgba(255, 210, 63, 0.20) 0%, transparent 35%),
+    radial-gradient(circle at 15% 70%, rgba(78, 205, 196, 0.18) 0%, transparent 40%),
+    radial-gradient(circle at 88% 85%, rgba(255, 107, 157, 0.18) 0%, transparent 35%),
+    radial-gradient(circle at 50% 45%, rgba(181, 123, 255, 0.10) 0%, transparent 50%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+.container { max-width: 480px; margin: 0 auto; padding: 0 18px; position: relative; }
+
+header {
+  padding: 36px 0 22px;
+  text-align: center;
+  position: relative;
+}
+
+/* Cute floating emoji decorations */
+.emoji-deco {
+  position: absolute;
+  font-size: 32px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.08));
+  animation: floatY 4s ease-in-out infinite;
+}
+.emoji-deco.size-lg { font-size: 38px; }
+.emoji-deco.size-sm { font-size: 24px; }
+.emoji-deco.delay-1 { animation-delay: 0.5s; }
+.emoji-deco.delay-2 { animation-delay: 1s; }
+.emoji-deco.delay-3 { animation-delay: 1.5s; }
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+  50% { transform: translateY(-8px) rotate(var(--rot, 0deg)); }
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--coral-dark);
+  background: rgba(255, 107, 71, 0.14);
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 2;
+}
+
+h1 {
+  font-family: 'Fraunces', 'Noto Serif SC', serif;
+  font-size: 38px;
+  font-weight: 700;
+  font-variation-settings: 'opsz' 144;
+  color: var(--ink);
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 2;
+}
+h1 .accent { color: var(--coral); font-style: italic; }
+
+.subtitle {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 2;
+}
+
+.day-badge {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--coral) 0%, var(--pink) 100%);
+  border-radius: 100px;
+  box-shadow: 0 6px 20px rgba(255, 107, 71, 0.35);
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+.day-badge .num {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.day-badge .label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  opacity: 0.95;
+}
+
+.date-line {
+  margin-top: 12px;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-soft);
+  position: relative;
+  z-index: 2;
+}
+
+.quote {
+  margin: 20px 18px 24px;
+  text-align: center;
+  font-family: 'Fraunces', 'Noto Serif SC', serif;
+  font-size: 16px;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.6;
+  position: relative;
+}
+.quote::before, .quote::after { content: '"'; font-size: 28px; color: var(--coral); font-weight: 700; }
+.quote::before { margin-right: 4px; }
+.quote::after { margin-left: 4px; }
+
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 22px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 18px rgba(31, 41, 55, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.card-title {
+  font-family: 'Fraunces', 'Noto Serif SC', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .emoji { font-size: 22px; }
+.card-subtitle { font-size: 12px; color: var(--ink-soft); margin-bottom: 16px; }
+
+.garden {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.flower {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.flower:active { transform: scale(0.9) rotate(8deg); }
+.flower svg { width: 100%; height: 100%; }
+.flower.today::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px dashed var(--coral);
+  border-radius: 50%;
+  animation: spin 18s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.deficit-card {
+  background: linear-gradient(125deg, #FF6B9D 0%, #FF6B47 45%, #FFA947 75%, #FFD23F 100%);
+  color: white;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(255, 107, 71, 0.3);
+}
+.deficit-card .card-title { color: white; }
+.deficit-card .card-subtitle { color: rgba(255,255,255,0.85); }
+.deficit-card::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -25%;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(255, 245, 200, 0.4) 0%, transparent 65%);
+  pointer-events: none;
+}
+.deficit-card::after {
+  content: '';
+  position: absolute;
+  bottom: -25%;
+  left: -15%;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(255, 107, 157, 0.35) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.deficit-twin {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin: 16px 0 14px;
+  position: relative;
+  z-index: 1;
+}
+.deficit-side { text-align: center; }
+.side-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.side-value {
+  font-family: 'Fraunces', serif;
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1;
+  font-variation-settings: 'opsz' 144;
+  color: white;
+  letter-spacing: -1.5px;
+  text-shadow: 0 3px 16px rgba(0,0,0,0.22), 0 0 1px rgba(255,255,255,0.3);
+}
+.side-value.today.negative { color: #FFE5E5; }
+.side-value.cumulative {
+  font-size: 40px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFFAEB 50%, #C8F5E5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 3px 12px rgba(0,0,0,0.15));
+}
+.side-unit {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 1.5px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+.deficit-divider {
+  width: 1px;
+  height: 70px;
+  background: rgba(255,255,255,0.4);
+  justify-self: center;
+}
+.deficit-target {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,255,255,0.95);
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+  font-weight: 500;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+.cal-input {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 14px;
+  padding: 12px 14px;
+  backdrop-filter: blur(8px);
+}
+.cal-input label {
+  display: block;
+  font-size: 10px;
+  color: rgba(255,255,255,0.95);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 600;
+}
+.cal-input input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  outline: none;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.cal-input input::placeholder { color: rgba(255,255,255,0.5); }
+.cal-input.burn label { color: #C8F5E5; }
+.cal-input.eat label { color: #FFFAEB; }
+
+/* VO2 MAX - same size as other tiles, vibrant gradient */
+.metric.tile-vo2 {
+  background: linear-gradient(135deg, #06D6A0 0%, #4ECDC4 50%, #5B8DEF 100%);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  color: white;
+  box-shadow: 0 4px 14px rgba(91, 141, 239, 0.22);
+}
+.metric.tile-vo2::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -15%;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(255, 245, 200, 0.4) 0%, transparent 70%);
+  pointer-events: none;
+}
+.metric.tile-vo2:focus-within {
+  background: linear-gradient(135deg, #06D6A0 0%, #4ECDC4 50%, #5B8DEF 100%);
+  border-color: rgba(255,255,255,0.5);
+}
+.metric.tile-vo2 label {
+  color: rgba(255,255,255,0.9);
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+.metric.tile-vo2 input {
+  color: white;
+  font-weight: 900;
+  position: relative;
+  z-index: 1;
+}
+.metric.tile-vo2 input::placeholder { color: rgba(255,255,255,0.5); }
+.metric.tile-vo2 .unit {
+  color: rgba(255,255,255,0.7);
+}
+
+.vo2-zone-tag {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  background: rgba(255,255,255,0.25);
+  color: white;
+  padding: 3px 9px;
+  border-radius: 100px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.3);
+  z-index: 2;
+}
+.vo2-zone-tag.zone-high {
+  background: linear-gradient(135deg, #FFD23F, #FF6B47);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(255, 210, 63, 0.5);
+  color: white;
+}
+.vo2-zone-tag.zone-mid { background: rgba(255,255,255,0.35); }
+
+/* Decorative 8th tile - rotating daily tip + flower garden */
+.metric.tile-decor {
+  background: linear-gradient(135deg, #FFF5DC 0%, #FFE5C0 50%, #FFD4C5 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 14px 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(255, 169, 71, 0.12);
+}
+.metric.tile-decor::before {
+  content: '✨';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+.metric.tile-decor::after {
+  content: '✿';
+  position: absolute;
+  bottom: -6px;
+  left: -4px;
+  font-size: 50px;
+  color: #FFCBA4;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.decor-flowers {
+  font-size: 22px;
+  letter-spacing: -2px;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.05));
+}
+.decor-text {
+  font-family: 'Fraunces', 'Noto Serif SC', serif;
+  font-style: italic;
+  font-size: 13px;
+  font-weight: 500;
+  color: #8A4625;
+  line-height: 1.3;
+  position: relative;
+  z-index: 1;
+}
+
+.check-list { display: flex; flex-direction: column; gap: 10px; }
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--warm);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+.check-item:active { transform: scale(0.98); }
+.check-item.done {
+  background: linear-gradient(135deg, rgba(6, 214, 160, 0.18), rgba(78, 205, 196, 0.12));
+  border-color: var(--mint);
+}
+.check-box {
+  width: 26px; height: 26px; min-width: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--ink-fade);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  background: white;
+}
+.check-item.done .check-box {
+  background: var(--mint);
+  border-color: var(--mint);
+  transform: scale(1.05);
+}
+.check-box svg { width: 14px; height: 14px; stroke: white; stroke-width: 3; fill: none; opacity: 0; transition: opacity 0.2s; }
+.check-item.done .check-box svg { opacity: 1; }
+.check-content { flex: 1; }
+.check-label { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.check-time { font-size: 11px; color: var(--ink-soft); font-family: 'DM Mono', monospace; }
+.check-item.done .check-label { color: var(--mint-dark); }
+.check-emoji { font-size: 22px; width: 30px; text-align: center; }
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.metric {
+  background: var(--warm);
+  border-radius: 14px;
+  padding: 12px 14px;
+  position: relative;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+.metric:focus-within { border-color: var(--coral); background: white; }
+.metric label {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.metric input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  outline: none;
+}
+.metric input::placeholder { color: var(--ink-fade); font-weight: 400; }
+.metric .unit {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  font-size: 10px;
+  color: var(--ink-fade);
+  font-family: 'DM Mono', monospace;
+}
+
+/* THEMED TILES — each metric gets distinct soft pastel gradient + colored value */
+.metric.tile-weight {
+  background: linear-gradient(135deg, #FFE5D0 0%, #FFCDB2 100%);
+  box-shadow: 0 3px 10px rgba(255, 138, 101, 0.12);
+}
+.metric.tile-weight input { color: #B6532A; }
+.metric.tile-weight .unit  { color: #B6532A; opacity: 0.65; }
+
+.metric.tile-bodyfat {
+  background: linear-gradient(135deg, #FFE0EC 0%, #FFC4D4 100%);
+  box-shadow: 0 3px 10px rgba(255, 107, 157, 0.12);
+}
+.metric.tile-bodyfat input { color: #B83A6A; }
+.metric.tile-bodyfat .unit  { color: #B83A6A; opacity: 0.65; }
+
+.metric.tile-deep {
+  background: linear-gradient(135deg, #E8DEF5 0%, #D2BBF0 100%);
+  box-shadow: 0 3px 10px rgba(181, 123, 255, 0.14);
+}
+.metric.tile-deep input { color: #6A3BA8; }
+.metric.tile-deep .unit  { color: #6A3BA8; opacity: 0.65; }
+
+.metric.tile-hrv {
+  background: linear-gradient(135deg, #DDD0F0 0%, #BCA6E0 100%);
+  box-shadow: 0 3px 10px rgba(159, 122, 217, 0.14);
+}
+.metric.tile-hrv input { color: #4A2C82; }
+.metric.tile-hrv .unit  { color: #4A2C82; opacity: 0.65; }
+
+.metric.tile-rhr {
+  background: linear-gradient(135deg, #D0F0EC 0%, #A8E0D8 100%);
+  box-shadow: 0 3px 10px rgba(78, 205, 196, 0.14);
+}
+.metric.tile-rhr input { color: #0F7A6E; }
+.metric.tile-rhr .unit  { color: #0F7A6E; opacity: 0.65; }
+
+.metric.tile-steps {
+  background: linear-gradient(135deg, #FFF5C0 0%, #FFE082 100%);
+  box-shadow: 0 3px 10px rgba(255, 169, 71, 0.14);
+}
+.metric.tile-steps input { color: #C4691A; }
+.metric.tile-steps .unit  { color: #C4691A; opacity: 0.65; }
+
+/* themed labels stay subtle but pick up tint */
+.metric.tile-weight label  { color: #8A4625; }
+.metric.tile-bodyfat label { color: #8A2E54; }
+.metric.tile-deep label    { color: #533082; }
+.metric.tile-hrv label     { color: #3A2370; }
+.metric.tile-rhr label     { color: #075E55; }
+.metric.tile-steps label   { color: #9A5215; }
+
+/* AUTO tag adapts to themed tiles */
+.metric[class*="tile-"] .auto-tag {
+  background: rgba(255,255,255,0.55);
+  color: rgba(0,0,0,0.55);
+}
+.metric .auto-tag {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  font-size: 8.5px;
+  color: var(--mint-dark);
+  background: rgba(6, 214, 160, 0.18);
+  padding: 2px 7px;
+  border-radius: 100px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.3px;
+  font-weight: 700;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.stat {
+  text-align: center;
+  padding: 18px 10px;
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.stat:nth-child(1) { background: linear-gradient(135deg, var(--coral), var(--pink)); }
+.stat:nth-child(2) { background: linear-gradient(135deg, var(--mint), var(--sky)); }
+.stat:nth-child(3) { background: linear-gradient(135deg, var(--sunshine), #FFA947); }
+.stat:nth-child(4) { background: linear-gradient(135deg, var(--purple), var(--pink)); }
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: white;
+  line-height: 1;
+}
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.95);
+  margin-top: 6px;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.chart-container { margin-top: 14px; position: relative; }
+.chart-svg { width: 100%; height: 150px; display: block; }
+.chart-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.chart-tab {
+  padding: 7px 14px;
+  font-size: 12px;
+  background: var(--warm);
+  border-radius: 100px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border: 2px solid transparent;
+  font-weight: 500;
+}
+.chart-tab.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+.no-data {
+  text-align: center;
+  padding: 36px 0;
+  font-size: 12px;
+  color: var(--ink-fade);
+  font-style: italic;
+  font-family: 'Fraunces', serif;
+}
+
+.milestone-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.milestone-row::-webkit-scrollbar { display: none; }
+.milestone {
+  min-width: 90px;
+  text-align: center;
+  padding: 14px 8px;
+  background: var(--warm);
+  border-radius: 16px;
+  opacity: 0.45;
+  transition: all 0.4s;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+}
+.milestone.unlocked {
+  opacity: 1;
+  background: linear-gradient(135deg, var(--sunshine), var(--coral));
+  border-color: var(--coral-dark);
+  box-shadow: 0 4px 14px rgba(255, 107, 71, 0.35);
+}
+.milestone .icon { font-size: 26px; margin-bottom: 4px; }
+.milestone .text {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+}
+.milestone.unlocked .text { color: white; font-weight: 700; }
+
+.shortcut-card {
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  color: white;
+  border: none;
+}
+.shortcut-card .card-title { color: white; }
+.shortcut-card .card-subtitle { color: rgba(255,255,255,0.85); }
+
+.shortcut-btn {
+  display: block;
+  width: 100%;
+  background: white;
+  color: var(--purple);
+  text-align: center;
+  padding: 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 12px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.shortcut-btn:active { transform: scale(0.97); }
+
+.shortcut-steps {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.95);
+}
+.shortcut-steps code {
+  background: rgba(0,0,0,0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  word-break: break-all;
+  display: inline-block;
+}
+.shortcut-steps .step {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+.shortcut-steps .step-num {
+  background: rgba(255,255,255,0.25);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--ink);
+  color: white;
+  padding: 12px 22px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 100;
+  transition: transform 0.3s ease;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.reset-btn {
+  background: transparent;
+  border: 1.5px solid var(--ink-fade);
+  color: var(--ink-fade);
+  padding: 8px 18px;
+  border-radius: 100px;
+  font-size: 11px;
+  margin: 18px auto 0;
+  display: block;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+}
+
+footer {
+  text-align: center;
+  margin-top: 36px;
+  padding: 20px;
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  color: var(--ink-fade);
+  font-style: italic;
+}
+footer .heart { color: var(--coral); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+  <!-- Cute floating emoji decorations -->
+  <span class="emoji-deco size-lg" style="left: 4px; top: 28px; --rot: -12deg;">🌸</span>
+  <span class="emoji-deco size-sm delay-1" style="left: 36px; top: 78px; --rot: 8deg;">🌿</span>
+  <span class="emoji-deco size-lg delay-2" style="right: 4px; top: 24px; --rot: 14deg;">🌻</span>
+  <span class="emoji-deco size-sm delay-3" style="right: 30px; top: 80px; --rot: -10deg;">🌷</span>
+  <span class="emoji-deco size-sm delay-1" style="left: 50%; top: 8px; --rot: 0deg;">✨</span>
+  
+  <div class="eyebrow">RUONAN · MAY 2026</div>
+  <h1>三十<span class="accent">日</span>蜕变</h1>
+  <div class="subtitle">Thirty Days · Thirty Blooms</div>
+  <div class="day-badge">
+    <span class="num" id="day-num">1</span>
+    <span class="label">/ 30</span>
+  </div>
+  <div class="date-line" id="date-line"></div>
+</header>
+
+<div class="quote" id="quote">种一棵树最好的时间是十年前,其次是现在。</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">🌸</span>三十朵花园</div>
+  <div class="card-subtitle">每完成一日 · 一朵绽放</div>
+  <div class="garden" id="garden"></div>
+</div>
+
+<div class="card deficit-card">
+  <div class="card-title"><span class="emoji">🔥</span>热量缺口</div>
+  <div class="card-subtitle">消耗 - 摄入 = 缺口</div>
+  <div class="deficit-twin">
+    <div class="deficit-side">
+      <div class="side-label">今日</div>
+      <div class="side-value today" id="deficit-value">--</div>
+      <div class="side-unit">KCAL</div>
+    </div>
+    <div class="deficit-divider"></div>
+    <div class="deficit-side">
+      <div class="side-label">累计 30 天</div>
+      <div class="side-value cumulative" id="deficit-total">0</div>
+      <div class="side-unit">TOTAL KCAL</div>
+    </div>
+  </div>
+  <div class="deficit-target">🎯 目标:每日缺口 500-800 kcal</div>
+  <div class="cal-grid">
+    <div class="cal-input burn">
+      <label>消耗 BURN · 自动</label>
+      <input type="number" id="m-burn" placeholder="0" inputmode="numeric">
+    </div>
+    <div class="cal-input eat">
+      <label>摄入 EAT · 饮食App</label>
+      <input type="number" id="m-eat" placeholder="0" inputmode="numeric">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">✨</span>今日打卡</div>
+  <div class="card-subtitle">通用 5 项 · 不分上班休假</div>
+  <div class="check-list" id="checklist"></div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">📊</span>身体数据</div>
+  <div class="card-subtitle">绿标 AUTO = 一键自动同步</div>
+  
+  <div class="metrics">
+    <!-- VO2 MAX as standard tile (equal size) -->
+    <div class="metric tile-vo2">
+      <span class="vo2-zone-tag" id="vo2-zone-tag">--</span>
+      <label>🫁 VO₂ MAX</label>
+      <input type="number" id="m-vo2" placeholder="--" step="0.1" inputmode="decimal">
+      <span class="unit">ML·KG·MIN</span>
+    </div>
+    <div class="metric tile-weight">
+      <label>⚖️ 体重</label>
+      <span class="auto-tag">AUTO</span>
+      <input type="number" step="0.1" id="m-weight" placeholder="--" inputmode="decimal">
+      <span class="unit">KG</span>
+    </div>
+    <div class="metric tile-bodyfat">
+      <label>🌸 体脂率</label>
+      <span class="auto-tag">AUTO</span>
+      <input type="number" step="0.1" id="m-bodyfat" placeholder="--" inputmode="decimal">
+      <span class="unit">%</span>
+    </div>
+    <div class="metric tile-deep">
+      <label>🌙 深睡时长</label>
+      <span class="auto-tag">AUTO</span>
+      <input type="number" id="m-deep" placeholder="--" inputmode="numeric">
+      <span class="unit">MIN</span>
+    </div>
+    <div class="metric tile-hrv">
+      <label>💜 HRV</label>
+      <span class="auto-tag">AUTO</span>
+      <input type="number" id="m-hrv" placeholder="--" inputmode="numeric">
+      <span class="unit">MS</span>
+    </div>
+    <div class="metric tile-rhr">
+      <label>💗 静息心率</label>
+      <span class="auto-tag">AUTO</span>
+      <input type="number" id="m-rhr" placeholder="--" inputmode="numeric">
+      <span class="unit">BPM</span>
+    </div>
+    <div class="metric tile-steps">
+      <label>👟 步数</label>
+      <span class="auto-tag">AUTO</span>
+      <input type="number" id="m-steps" placeholder="--" inputmode="numeric">
+      <span class="unit">STEPS</span>
+    </div>
+    <!-- Decorative 8th tile - daily rotating tip -->
+    <div class="metric tile-decor">
+      <div class="decor-flowers" id="decor-flowers">🌸 🌷 🌻 🌺</div>
+      <div class="decor-text" id="decor-text">小步而不停步</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">🏆</span>阶段战绩</div>
+  <div class="card-subtitle">不必完美 · 持续就够</div>
+  <div class="stats-grid">
+    <div class="stat">
+      <div class="stat-num" id="stat-loss">0.0</div>
+      <div class="stat-label">累计减重 KG</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-fat">0.0</div>
+      <div class="stat-label">体脂下降 %</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-rate">0%</div>
+      <div class="stat-label">打卡完成率</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-streak">0</div>
+      <div class="stat-label">连续打卡 天</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">📈</span>趋势曲线</div>
+  <div class="card-subtitle">点击切换不同指标</div>
+  <div class="chart-tabs">
+    <div class="chart-tab active" data-metric="weight">体重</div>
+    <div class="chart-tab" data-metric="bodyfat">体脂率</div>
+    <div class="chart-tab" data-metric="vo2">VO₂</div>
+    <div class="chart-tab" data-metric="deficit">缺口</div>
+    <div class="chart-tab" data-metric="deep">深睡</div>
+    <div class="chart-tab" data-metric="hrv">HRV</div>
+    <div class="chart-tab" data-metric="rhr">RHR</div>
+  </div>
+  <div class="chart-container">
+    <svg class="chart-svg" id="chart" viewBox="0 0 320 150" preserveAspectRatio="none"></svg>
+    <div class="no-data" id="chart-empty" style="display:none;">还没有数据,先记几天再来看 · ✨</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="emoji">🎖️</span>里程碑</div>
+  <div class="card-subtitle">解锁的徽章 · 滑动查看</div>
+  <div class="milestone-row" id="milestones"></div>
+</div>
+
+<div class="card shortcut-card">
+  <div class="card-title"><span class="emoji">⚡</span>苹果健康自动同步</div>
+  <div class="card-subtitle">建议每日 21:00 睡前点一次 · 3 秒搞定</div>
+  <div class="shortcut-steps">
+    <div class="step"><div class="step-num">1</div><div>打开 <b>快捷指令 App</b> → 创建新指令,命名「<b>同步看板</b>」</div></div>
+    <div class="step"><div class="step-num">2</div><div>添加多个「<b>查找健康样本</b>」动作,筛选「<b>今天</b>」:<br>活动能量 · 静息能量 · 饮食能量 · 深睡 · HRV · RHR · 步数 · 体重 · 体脂率 · <b>VO₂ max</b></div></div>
+    <div class="step"><div class="step-num">3</div><div>用「<b>打开 URL</b>」拼接:<br><code>https://看板地址/?burn=【活动+静息】&eat=【饮食】&deep=【深睡】&hrv=【HRV】&rhr=【RHR】&steps=【步数】&weight=【体重】&bodyfat=【体脂】&vo2=【VO₂】</code></div></div>
+    <div class="step"><div class="step-num">4</div><div>把指令 <b>添加到主屏幕</b>,每天 21:00 睡前点一下,数据全部自动填入 ✨</div></div>
+  </div>
+  <button class="shortcut-btn" onclick="copyURLTemplate()">📋 复制 URL 模板</button>
+</div>
+
+<button class="reset-btn" onclick="resetAll()">RESET ALL DATA</button>
+
+<footer>
+  <div>made with <span class="heart">●</span> by Ruonan</div>
+  <div style="margin-top: 4px; font-size: 11px; font-family: 'DM Mono', monospace;">MAY 2026 · BLOOM IN 30</div>
+</footer>
+
+</div>
+
+<div class="toast" id="toast">已保存 ✓</div>
+
+<script>
+const PLAN_START = '2026-05-01';
+const TOTAL_DAYS = 30;
+
+const QUOTES = [
+  '种一棵树最好的时间是十年前,其次是现在。',
+  '日拱一卒,功不唐捐。',
+  'You\'re the gardener. Be patient with the bloom.',
+  '小步而不停步,这就是节奏。',
+  'Discipline is choosing what you want most over what you want now.',
+  '花期不同,各自精彩。',
+  '今天的选择,决定 30 天后的样子。',
+  'The body achieves what the mind believes.',
+  '你比想象中更有力量。',
+  'Slow is smooth. Smooth is fast.',
+  '心如止水,身似流云。',
+  'Consistency beats intensity, every time.',
+  '不需要完美,只需要不停。',
+  'Trust the process, love the journey.',
+  '今日所付出 · 皆为未来铺路。'
+];
+
+const CHECKLIST_TEMPLATE = [
+  { id: 'wakeup',   emoji: '🌅', label: '5:30 起床 + 拉开窗帘晒晨光', time: '5:30 · 铁律' },
+  { id: 'training', emoji: '🏃‍♀️', label: '6:00-7:00 训练完成',           time: '60 min' },
+  { id: 'sunlight', emoji: '☀️', label: '走路晒太阳 ≥ 20 分钟',            time: '户外光照' },
+  { id: 'window',   emoji: '⏱️', label: '16:8 进食窗口守住(15:30 断食)', time: '7:45-15:30' },
+  { id: 'bedtime',  emoji: '💤', label: '22:00 上床闭眼',                  time: '22:00 · 铁律' }
+];
+
+const MILESTONES = [
+  { id: 'd3',  text: '3 日',     icon: '🌱', check: s => s.streak >= 3 },
+  { id: 'd7',  text: '7 日',     icon: '🌿', check: s => s.streak >= 7 },
+  { id: 'd14', text: '14 日',    icon: '🪴', check: s => s.streak >= 14 },
+  { id: 'd21', text: '21 日',    icon: '🌳', check: s => s.streak >= 21 },
+  { id: 'd30', text: '30 日',    icon: '🏆', check: s => s.streak >= 30 },
+  { id: 'kg1', text: '减 1kg',  icon: '⭐', check: s => s.loss >= 1 },
+  { id: 'kg3', text: '减 3kg',  icon: '🌟', check: s => s.loss >= 3 },
+  { id: 'kg5', text: '减 5kg',  icon: '💎', check: s => s.loss >= 5 },
+  { id: 'fat2', text: '体脂 -2%', icon: '🔥', check: s => s.fatLoss >= 2 },
+  { id: 'fat5', text: '体脂 -5%', icon: '⚡', check: s => s.fatLoss >= 5 },
+  { id: 'vo2_mid', text: 'VO₂ 中区', icon: '🌊', check: s => s.maxVO2 >= 30 },
+  { id: 'vo2_high', text: 'VO₂ 高区', icon: '🫁', check: s => s.maxVO2 >= 38 },
+  { id: 'def15k', text: '缺口 15K', icon: '💥', check: s => s.totalDeficit >= 15000 },
+  { id: 'def30k', text: '缺口 30K', icon: '🎆', check: s => s.totalDeficit >= 30000 },
+  { id: 'sleep70', text: '深睡 70+', icon: '🌙', check: s => s.avgDeep >= 70 },
+  { id: 'sleep90', text: '深睡 90+', icon: '✨', check: s => s.avgDeep >= 90 }
+];
+
+let appData = {};
+let currentMetric = 'weight';
+
+async function loadAll() {
+  try {
+    const res = await window.storage.list('day:');
+    if (!res || !res.keys) return;
+    for (const k of res.keys) {
+      try {
+        const r = await window.storage.get(k);
+        if (r && r.value) appData[k.replace('day:','')] = JSON.parse(r.value);
+      } catch(e) {}
+    }
+  } catch(e) {}
+}
+
+async function saveDay(dateStr, silent) {
+  const day = appData[dateStr] || { check: {}, m: {} };
+  appData[dateStr] = day;
+  try {
+    await window.storage.set('day:' + dateStr, JSON.stringify(day));
+    if (!silent) showToast();
+  } catch(e) {}
+}
+
+function fmtDate(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function dayIndex() {
+  const start = new Date(PLAN_START);
+  const today = new Date();
+  start.setHours(0,0,0,0); today.setHours(0,0,0,0);
+  return Math.floor((today - start) / 86400000);
+}
+
+function todayStr() { return fmtDate(new Date()); }
+
+function getDay(dateStr) {
+  if (!appData[dateStr]) appData[dateStr] = { check: {}, m: {} };
+  if (!appData[dateStr].check) appData[dateStr].check = {};
+  if (!appData[dateStr].m) appData[dateStr].m = {};
+  return appData[dateStr];
+}
+
+function dayCompletion(dateStr) {
+  const d = appData[dateStr];
+  if (!d || !d.check) return 0;
+  const total = CHECKLIST_TEMPLATE.length;
+  const done = CHECKLIST_TEMPLATE.filter(c => d.check[c.id]).length;
+  return done / total;
+}
+
+function dayDeficit(dateStr) {
+  const d = appData[dateStr];
+  if (!d || !d.m) return 0;
+  const burn = d.m.burn || 0;
+  const eat = d.m.eat || 0;
+  if (!burn || !eat) return 0;
+  return burn - eat;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg || '已保存 ✓';
+  t.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => t.classList.remove('show'), 1400);
+}
+
+async function checkURLParams() {
+  const params = new URLSearchParams(window.location.search);
+  if (!params.toString()) return;
+  
+  const ds = params.get('date') || todayStr();
+  const day = getDay(ds);
+  let count = 0;
+  
+  const fields = [
+    ['burn',    'burn'],    ['eat',     'eat'],
+    ['deep',    'deep'],    ['hrv',     'hrv'],
+    ['rhr',     'rhr'],     ['steps',   'steps'],
+    ['weight',  'weight'],  ['bodyfat', 'bodyfat'],
+    ['vo2',     'vo2']
+  ];
+  
+  for (const [param, field] of fields) {
+    const v = params.get(param);
+    if (v != null && v !== '') {
+      const num = parseFloat(v);
+      if (!isNaN(num)) { day.m[field] = num; count++; }
+    }
+  }
+  
+  if (count > 0) {
+    await saveDay(ds, true);
+    showToast(`✨ 自动同步了 ${count} 项数据`);
+    history.replaceState({}, '', window.location.pathname);
+  }
+}
+
+function copyURLTemplate() {
+  const base = window.location.href.split('?')[0];
+  const tpl = `${base}?burn=【活动+静息】&eat=【饮食】&deep=【深睡分钟】&hrv=【HRV】&rhr=【静息心率】&steps=【步数】&weight=【体重】&bodyfat=【体脂率】&vo2=【VO2】`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(tpl).then(() => {
+      showToast('✓ URL 模板已复制');
+    }).catch(() => prompt('复制下面的 URL:', tpl));
+  } else {
+    prompt('复制下面的 URL:', tpl);
+  }
+}
+
+function renderHeader() {
+  const idx = dayIndex();
+  const dayNum = Math.max(1, Math.min(idx + 1, TOTAL_DAYS));
+  document.getElementById('day-num').textContent = dayNum;
+  
+  const today = new Date();
+  const opts = { month: 'long', day: 'numeric', weekday: 'long' };
+  document.getElementById('date-line').textContent = today.toLocaleDateString('zh-CN', opts);
+  document.getElementById('quote').textContent = QUOTES[idx % QUOTES.length] || QUOTES[0];
+}
+
+function flowerSVG(state, dayNum) {
+  const palettes = [
+    { p: '#FF6B47', c: '#FFD23F' },
+    { p: '#FF6B9D', c: '#FFE066' },
+    { p: '#06D6A0', c: '#FFD23F' },
+    { p: '#B57BFF', c: '#FF6B9D' },
+    { p: '#4ECDC4', c: '#FFD23F' },
+    { p: '#FF6B47', c: '#06D6A0' }
+  ];
+  const c = palettes[(dayNum - 1) % palettes.length];
+  
+  if (state === 'future') {
+    return `<svg viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="3.5" fill="#E5E7EB"/>
+      <text x="20" y="38" text-anchor="middle" font-size="9" fill="#9CA3AF" font-family="DM Mono, monospace" font-weight="500">${dayNum}</text>
+    </svg>`;
+  }
+  
+  if (state === 'partial') {
+    return `<svg viewBox="0 0 40 40">
+      <g transform="translate(20 19)">
+        <ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="${c.p}" opacity="0.5"/>
+        <ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="${c.p}" opacity="0.5" transform="rotate(120)"/>
+        <ellipse cx="0" cy="-7" rx="4" ry="6.5" fill="${c.p}" opacity="0.5" transform="rotate(240)"/>
+        <circle cx="0" cy="0" r="3" fill="${c.c}"/>
+      </g>
+      <text x="20" y="38" text-anchor="middle" font-size="9" fill="#6B7280" font-family="DM Mono, monospace" font-weight="500">${dayNum}</text>
+    </svg>`;
+  }
+  
+  return `<svg viewBox="0 0 40 40">
+    <g transform="translate(20 19)">
+      <ellipse cx="0" cy="-9" rx="5.5" ry="8.5" fill="${c.p}"/>
+      <ellipse cx="0" cy="-9" rx="5.5" ry="8.5" fill="${c.p}" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-9" rx="5.5" ry="8.5" fill="${c.p}" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-9" rx="5.5" ry="8.5" fill="${c.p}" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-9" rx="5.5" ry="8.5" fill="${c.p}" transform="rotate(288)"/>
+      <circle cx="0" cy="0" r="4" fill="${c.c}"/>
+      <circle cx="-1" cy="-1" r="1" fill="white" opacity="0.6"/>
+    </g>
+    <text x="20" y="38" text-anchor="middle" font-size="9" fill="#1F2937" font-family="DM Mono, monospace" font-weight="700">${dayNum}</text>
+  </svg>`;
+}
+
+function renderGarden() {
+  const garden = document.getElementById('garden');
+  garden.innerHTML = '';
+  const start = new Date(PLAN_START);
+  const todayIdx = dayIndex();
+  
+  for (let i = 0; i < TOTAL_DAYS; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    const ds = fmtDate(d);
+    
+    let state = 'future';
+    if (i <= todayIdx) {
+      const comp = dayCompletion(ds);
+      if (comp >= 0.99) state = 'done';
+      else if (comp > 0) state = 'partial';
+    }
+    
+    const flower = document.createElement('div');
+    flower.className = 'flower' + (i === todayIdx ? ' today' : '');
+    flower.innerHTML = flowerSVG(state, i + 1);
+    flower.title = `Day ${i+1} · ${ds}`;
+    garden.appendChild(flower);
+  }
+}
+
+function renderChecklist() {
+  const ds = todayStr();
+  const day = getDay(ds);
+  const list = document.getElementById('checklist');
+  
+  list.innerHTML = '';
+  CHECKLIST_TEMPLATE.forEach(item => {
+    const isDone = !!day.check[item.id];
+    const el = document.createElement('div');
+    el.className = 'check-item' + (isDone ? ' done' : '');
+    el.innerHTML = `
+      <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="4,12 10,18 20,6"/></svg></div>
+      <div class="check-emoji">${item.emoji}</div>
+      <div class="check-content">
+        <div class="check-label">${item.label}</div>
+        <div class="check-time">${item.time}</div>
+      </div>`;
+    el.onclick = () => {
+      day.check[item.id] = !day.check[item.id];
+      saveDay(ds);
+      renderChecklist();
+      renderGarden();
+      renderStats();
+    };
+    list.appendChild(el);
+  });
+}
+
+function renderDeficit() {
+  const ds = todayStr();
+  const day = getDay(ds);
+  const burn = document.getElementById('m-burn');
+  const eat = document.getElementById('m-eat');
+  burn.value = day.m.burn != null ? day.m.burn : '';
+  eat.value = day.m.eat != null ? day.m.eat : '';
+  
+  burn.oninput = () => {
+    day.m.burn = burn.value === '' ? null : parseFloat(burn.value);
+    saveDay(ds);
+    updateDeficitDisplay();
+    renderStats();
+    renderChart();
+  };
+  eat.oninput = () => {
+    day.m.eat = eat.value === '' ? null : parseFloat(eat.value);
+    saveDay(ds);
+    updateDeficitDisplay();
+    renderStats();
+    renderChart();
+  };
+  updateDeficitDisplay();
+}
+
+function updateDeficitDisplay() {
+  const ds = todayStr();
+  const def = dayDeficit(ds);
+  const todayEl = document.getElementById('deficit-value');
+  const totalEl = document.getElementById('deficit-total');
+  
+  // Today
+  if (def === 0) {
+    todayEl.textContent = '--';
+    todayEl.classList.remove('negative');
+  } else {
+    todayEl.textContent = def > 0 ? '+' + Math.round(def) : Math.round(def);
+    todayEl.classList.toggle('negative', def < 0);
+  }
+  
+  // Cumulative (sum of positive deficit days)
+  let total = 0;
+  Object.keys(appData).forEach(d => {
+    const v = dayDeficit(d);
+    if (v > 0) total += v;
+  });
+  const totalK = total / 1000;
+  totalEl.textContent = totalK >= 10 ? Math.round(totalK) + 'K' : (totalK > 0 ? totalK.toFixed(1) + 'K' : '0');
+}
+
+function renderMetrics() {
+  const ds = todayStr();
+  const day = getDay(ds);
+  const fields = ['weight', 'bodyfat', 'deep', 'hrv', 'rhr', 'steps'];
+  fields.forEach(f => {
+    const el = document.getElementById('m-' + f);
+    el.value = day.m[f] != null ? day.m[f] : '';
+    el.oninput = () => {
+      day.m[f] = el.value === '' ? null : parseFloat(el.value);
+      saveDay(ds);
+      renderStats();
+      renderChart();
+    };
+  });
+}
+
+function computeStats() {
+  const dates = Object.keys(appData).sort();
+  let firstW = null, lastW = null;
+  let firstF = null, lastF = null;
+  let deepVals = [];
+  let totalDeficit = 0;
+  let maxVO2 = 0;
+  let latestVO2 = null;
+  
+  dates.forEach(d => {
+    const m = appData[d].m;
+    if (m && m.weight != null) {
+      if (firstW == null) firstW = m.weight;
+      lastW = m.weight;
+    }
+    if (m && m.bodyfat != null) {
+      if (firstF == null) firstF = m.bodyfat;
+      lastF = m.bodyfat;
+    }
+    if (m && m.deep != null) deepVals.push(m.deep);
+    if (m && m.vo2 != null) {
+      if (m.vo2 > maxVO2) maxVO2 = m.vo2;
+      latestVO2 = m.vo2;
+    }
+    const def = dayDeficit(d);
+    if (def > 0) totalDeficit += def;
+  });
+  
+  const loss = (firstW != null && lastW != null) ? Math.max(0, firstW - lastW) : 0;
+  const fatLoss = (firstF != null && lastF != null) ? Math.max(0, firstF - lastF) : 0;
+  const avgDeep = deepVals.length ? deepVals.reduce((a,b)=>a+b,0) / deepVals.length : null;
+  
+  let streak = 0;
+  const today = new Date();
+  for (let i = 0; i < TOTAL_DAYS; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const ds = fmtDate(d);
+    if (dayCompletion(ds) >= 0.99) streak++;
+    else if (i === 0) continue;
+    else break;
+  }
+  
+  const todayIdx = Math.max(0, dayIndex());
+  let total = 0, sum = 0;
+  for (let i = 0; i <= todayIdx && i < TOTAL_DAYS; i++) {
+    const d = new Date(PLAN_START);
+    d.setDate(d.getDate() + i);
+    sum += dayCompletion(fmtDate(d));
+    total++;
+  }
+  const rate = total > 0 ? sum / total : 0;
+  
+  return { loss, fatLoss, streak, avgDeep, rate, totalDeficit, maxVO2, latestVO2 };
+}
+
+function renderVO2() {
+  const ds = todayStr();
+  const day = getDay(ds);
+  
+  // Find latest VO2 across all days (it updates ~weekly, not daily)
+  const dates = Object.keys(appData).sort().reverse();
+  let latestVO2 = null;
+  for (const d of dates) {
+    if (appData[d].m && appData[d].m.vo2 != null) {
+      latestVO2 = appData[d].m.vo2;
+      break;
+    }
+  }
+  
+  const tagEl = document.getElementById('vo2-zone-tag');
+  const input = document.getElementById('m-vo2');
+  
+  input.value = day.m.vo2 != null ? day.m.vo2 : '';
+  input.placeholder = (day.m.vo2 == null && latestVO2 != null) ? latestVO2.toFixed(1) : '--';
+  
+  const displayVal = day.m.vo2 != null ? day.m.vo2 : latestVO2;
+  
+  if (displayVal != null) {
+    let zoneText = '低区', zoneClass = '';
+    if (displayVal >= 38)      { zoneText = '高 🎯'; zoneClass = 'zone-high'; }
+    else if (displayVal >= 30) { zoneText = '中区';   zoneClass = 'zone-mid'; }
+    
+    tagEl.textContent = zoneText;
+    tagEl.className = 'vo2-zone-tag ' + zoneClass;
+  } else {
+    tagEl.textContent = '--';
+    tagEl.className = 'vo2-zone-tag';
+  }
+  
+  input.oninput = () => {
+    day.m.vo2 = input.value === '' ? null : parseFloat(input.value);
+    saveDay(ds);
+    renderVO2();
+    renderChart();
+    renderStats();
+  };
+}
+
+// Daily rotating tips for the decorative tile
+const TIPS = [
+  { flowers: '🌸 🌷 🌻 🌺', text: '小步而不停步' },
+  { flowers: '🌷 🌼 🌸 🌹', text: '21:00 关灯,深睡来自仪式感' },
+  { flowers: '🌺 🪻 🌼 🌷', text: 'Z2 慢跑要能聊天,够慢才有效' },
+  { flowers: '🌻 🌸 🌹 🪷', text: '饿不死,是身体在燃脂' },
+  { flowers: '🌼 🌷 🌻 🌸', text: '起床 30 秒拉窗帘,生物钟重置' },
+  { flowers: '🌸 🪻 🌷 🌺', text: '体重看 7 日均值,不看单日' },
+  { flowers: '🌹 🌻 🌼 🌷', text: '训练后 30 分内补 20g 蛋白' },
+  { flowers: '🌺 🌸 🪷 🌹', text: '深睡 70+ 分钟才算合格' },
+  { flowers: '🌷 🌻 🌸 🪻', text: '咖啡只在 11 点前,别错过窗口' },
+  { flowers: '🪷 🌼 🌷 🌻', text: '每周一次 4×4 间歇,VO₂ 加速器' },
+  { flowers: '🌸 🌺 🌹 🌷', text: '加班日训练降级,但 22:00 必上床' },
+  { flowers: '🌷 🌸 🪻 🌼', text: 'HRV < 30 当天,降低训练强度' },
+  { flowers: '🌻 🌹 🌷 🌸', text: '一周一次 refeed,防代谢下调' },
+  { flowers: '🌺 🌼 🌷 🌸', text: '腰围比体重诚实,记得月底量' },
+  { flowers: '🪻 🌷 🌸 🌻', text: '睡前 4-7-8 呼吸 4 轮,降皮质醇' },
+  { flowers: '🌹 🌷 🌺 🌸', text: '走路晒太阳 20 分,胜过褪黑素' },
+  { flowers: '🌼 🌸 🌻 🌹', text: '蛋白每天 ≥ 90g,是保肌肉底线' },
+  { flowers: '🌸 🌹 🪷 🌷', text: '15:30 后只喝水,16:8 不能破' },
+  { flowers: '🌷 🌺 🌼 🌻', text: '经期推迟 > 5 天,立刻加碳水' },
+  { flowers: '🌻 🪻 🌸 🌷', text: '每日缺口 500-800 是黄金区' },
+  { flowers: '🪷 🌹 🌺 🌷', text: '冷水澡收尾,提神又燃脂' },
+  { flowers: '🌸 🌼 🌷 🌻', text: '镁 200mg 是失眠者的好朋友' },
+  { flowers: '🌷 🌹 🌸 🌺', text: '坚持比完美重要 1000 倍' },
+  { flowers: '🌺 🌷 🌻 🪻', text: '前 7 天最难,熬过去就上瘾' },
+  { flowers: '🌼 🌹 🌷 🌸', text: '体脂下降才是真胜利,体重会骗你' },
+  { flowers: '🪻 🌸 🌷 🌻', text: '21 天养成习惯,30 天看见自己' },
+  { flowers: '🌹 🌺 🌼 🌷', text: '睡眠是减脂的隐藏外挂' },
+  { flowers: '🌸 🌷 🌻 🪷', text: '今天的痛苦 · 明日的清晰' },
+  { flowers: '🌷 🌼 🌹 🌺', text: '你已经走了一半,继续往前' },
+  { flowers: '🌻 🌸 🪻 🌷', text: '30 朵花园 · 你已经种下种子' }
+];
+
+function renderDecor() {
+  const idx = Math.max(0, dayIndex());
+  const tip = TIPS[idx % TIPS.length];
+  document.getElementById('decor-flowers').textContent = tip.flowers;
+  document.getElementById('decor-text').textContent = tip.text;
+}
+
+function renderStats() {
+  const s = computeStats();
+  document.getElementById('stat-loss').textContent = s.loss.toFixed(1);
+  document.getElementById('stat-fat').textContent = s.fatLoss.toFixed(1);
+  document.getElementById('stat-streak').textContent = s.streak;
+  document.getElementById('stat-rate').textContent = Math.round(s.rate * 100) + '%';
+  renderMilestones(s);
+}
+
+function renderMilestones(s) {
+  const row = document.getElementById('milestones');
+  row.innerHTML = '';
+  MILESTONES.forEach(m => {
+    const unlocked = m.check(s);
+    const el = document.createElement('div');
+    el.className = 'milestone' + (unlocked ? ' unlocked' : '');
+    el.innerHTML = `<div class="icon">${m.icon}</div><div class="text">${m.text}</div>`;
+    row.appendChild(el);
+  });
+}
+
+function renderChart() {
+  const svg = document.getElementById('chart');
+  const empty = document.getElementById('chart-empty');
+  const dates = Object.keys(appData).sort();
+  const points = [];
+  
+  dates.forEach(d => {
+    let v = null;
+    if (currentMetric === 'deficit') {
+      const def = dayDeficit(d);
+      if (def !== 0) v = def;
+    } else {
+      v = appData[d].m && appData[d].m[currentMetric];
+    }
+    if (v != null && !isNaN(v)) points.push({ d, v });
+  });
+  
+  if (points.length < 2) {
+    svg.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  
+  const W = 320, H = 150, P = 16;
+  const vals = points.map(p => p.v);
+  const minV = Math.min(...vals);
+  const maxV = Math.max(...vals);
+  const range = maxV - minV || 1;
+  
+  const xStep = (W - 2*P) / (points.length - 1);
+  const xy = points.map((p, i) => ({
+    x: P + i * xStep,
+    y: H - P - ((p.v - minV) / range) * (H - 2*P)
+  }));
+  
+  let path = `M ${xy[0].x} ${xy[0].y}`;
+  for (let i = 1; i < xy.length; i++) {
+    const xc = (xy[i-1].x + xy[i].x) / 2;
+    const yc = (xy[i-1].y + xy[i].y) / 2;
+    path += ` Q ${xy[i-1].x} ${xy[i-1].y} ${xc} ${yc}`;
+  }
+  path += ` T ${xy[xy.length-1].x} ${xy[xy.length-1].y}`;
+  
+  const fillPath = path + ` L ${xy[xy.length-1].x} ${H-P} L ${xy[0].x} ${H-P} Z`;
+  
+  const colorMap = {
+    weight:   { line: '#FF6B47', fill: '#FFD2C0' },
+    bodyfat:  { line: '#FF6B9D', fill: '#FFCCDD' },
+    vo2:      { line: '#06D6A0', fill: '#A8EFD8' },
+    deficit:  { line: '#FFD23F', fill: '#FFF1A8' },
+    deep:     { line: '#B57BFF', fill: '#E0CCFF' },
+    hrv:      { line: '#9F7AD9', fill: '#D9C3FF' },
+    rhr:      { line: '#4ECDC4', fill: '#BFEEEA' }
+  };
+  const c = colorMap[currentMetric] || colorMap.weight;
+  
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="grad-${currentMetric}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${c.fill}" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="${c.fill}" stop-opacity="0.05"/>
+      </linearGradient>
+    </defs>
+    <path d="${fillPath}" fill="url(#grad-${currentMetric})"/>
+    <path d="${path}" fill="none" stroke="${c.line}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${xy.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="white" stroke="${c.line}" stroke-width="2"/>`).join('')}
+    <text x="${P}" y="${P-3}" font-size="10" fill="#9CA3AF" font-family="DM Mono">${maxV.toFixed(1)}</text>
+    <text x="${P}" y="${H-4}" font-size="10" fill="#9CA3AF" font-family="DM Mono">${minV.toFixed(1)}</text>
+  `;
+}
+
+function bindChartTabs() {
+  document.querySelectorAll('.chart-tab').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentMetric = tab.dataset.metric;
+      renderChart();
+    };
+  });
+}
+
+async function resetAll() {
+  if (!confirm('确定清空全部数据?这个操作不能撤销。')) return;
+  try {
+    const res = await window.storage.list('day:');
+    if (res && res.keys) {
+      for (const k of res.keys) await window.storage.delete(k);
+    }
+    appData = {};
+    renderAll();
+    showToast('已清空');
+  } catch(e) {}
+}
+
+function renderAll() {
+  renderHeader();
+  renderGarden();
+  renderChecklist();
+  renderDeficit();
+  renderVO2();
+  renderDecor();
+  renderMetrics();
+  renderStats();
+  renderChart();
+}
+
+(async function init() {
+  await loadAll();
+  await checkURLParams();
+  renderAll();
+  bindChartTabs();
+})();
+</script>
+
+</body>
+</html>
