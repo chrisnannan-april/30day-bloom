@@ -1364,6 +1364,43 @@ footer {
 <div class="toast" id="toast">已保存 ✓</div>
 
 <script>
+// ===== STORAGE POLYFILL =====
+// 优先用 Claude 工件的 window.storage(在 Claude.ai 里有);
+// GitHub Pages / iPhone PWA / 普通浏览器自动降级到 localStorage
+if (typeof window.storage === 'undefined' || !window.storage) {
+  window.storage = {
+    async list(prefix) {
+      const keys = [];
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith(prefix)) keys.push(k);
+        }
+      } catch(e) { console.warn('storage.list failed', e); }
+      return { keys };
+    },
+    async get(key) {
+      try {
+        const value = localStorage.getItem(key);
+        return value !== null ? { value } : null;
+      } catch(e) { console.warn('storage.get failed', e); return null; }
+    },
+    async set(key, value) {
+      try {
+        localStorage.setItem(key, value);
+        return { ok: true };
+      } catch(e) { console.warn('storage.set failed', e); return null; }
+    },
+    async delete(key) {
+      try {
+        localStorage.removeItem(key);
+        return { ok: true };
+      } catch(e) { console.warn('storage.delete failed', e); return null; }
+    }
+  };
+  console.log('🌿 已启用 localStorage 兜底存储');
+}
+
 const PLAN_START = '2026-05-01';
 const TOTAL_DAYS = 31;
 const START_WEIGHT = 57.0;
@@ -1421,8 +1458,7 @@ const RITUAL_TEMPLATE = [
   { id: 'r2', time: '20:00', text: '关大灯 · 只开暖光小灯' },
   { id: 'r3', time: '21:00', text: '热水澡 10 分钟(40-42°C 降核心体温)' },
   { id: 'r4', time: '21:15', text: '镁补剂 300mg(甘氨酸镁)' },
-  { id: 'r5', time: '21:20', text: '拉伸瑜伽 20 分钟 · 降皮质醇' },
-  { id: 'r6', time: '21:40', text: '4-7-8 呼吸 4 轮 · 写明天 3 件事' },
+  { id: 'r5', time: '21:20', text: '瑜伽或冥想' },
   { id: 'r7', time: '22:00', text: '手机出卧室 · 上床闭眼 · 全黑环境' }
 ];
 
