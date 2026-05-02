@@ -130,6 +130,16 @@ h1 .accent { color: var(--coral); font-style: italic; }
   letter-spacing: 1.5px;
 }
 
+.theme-badge {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
 /* ====== QUOTE ====== */
 .quote {
   text-align: center;
@@ -678,6 +688,46 @@ h1 .accent { color: var(--coral); font-style: italic; }
   position: relative;
 }
 .chart-svg { width: 100%; height: 180px; }
+
+#deficit-chart { height: 200px; }
+
+.deficit-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin: 8px 0 6px;
+  font-family: 'DM Mono', monospace;
+}
+.legend-item { display: inline-flex; align-items: center; gap: 5px; }
+.legend-bar {
+  display: inline-block;
+  width: 11px; height: 11px;
+  background: linear-gradient(180deg, #FFA947, #FF6B47);
+  border-radius: 2px;
+}
+.legend-line {
+  display: inline-block;
+  width: 14px; height: 2.5px;
+  background: #06D6A0;
+  border-radius: 1px;
+  position: relative;
+}
+.legend-line::after {
+  content: '';
+  position: absolute;
+  width: 5px; height: 5px;
+  background: #06D6A0;
+  border-radius: 50%;
+  top: -1.2px; left: 5px;
+}
+.legend-target {
+  display: inline-block;
+  width: 14px; height: 0;
+  border-top: 1.5px dashed #06D6A0;
+  position: relative; top: 5px;
+}
 .no-data {
   text-align: center;
   color: var(--ink-fade);
@@ -995,9 +1045,10 @@ footer {
     <span class="label">/ 31</span>
   </div>
   <div class="date-line" id="date-line"></div>
+  <div class="theme-badge" id="theme-badge">· 樱花粉 🌸 ·</div>
 </header>
 
-<div class="quote" id="quote">种一棵树最好的时间是十年前,其次是现在。</div>
+<div class="quote" id="quote">今天比昨天更轻一点 · 一点就够。</div>
 
 <!-- ====== HERO PROGRESS ====== -->
 <div class="card hero-card">
@@ -1039,23 +1090,23 @@ footer {
 <!-- ====== DEFICIT MATH (5月聚焦核心) ====== -->
 <div class="card math-card">
   <div class="card-title"><span class="emoji">🔥</span>每日热量数学</div>
-  <div class="card-subtitle">31 天 × 1,250 ≈ -5 kg · 美国行倒计时</div>
+  <div class="card-subtitle">31 天 × 1,100 ≈ -4.4 kg · 美国行倒计时</div>
   
   <div class="math-section-label">目标</div>
   <div class="math-row math-row-3">
     <div class="math-cell target">
       <div class="math-cell-label">目标缺口</div>
-      <div class="math-cell-num">1,250</div>
+      <div class="math-cell-num">1,100</div>
       <div class="math-cell-unit">KCAL/天</div>
     </div>
     <div class="math-cell">
       <div class="math-cell-label">消耗 TDEE</div>
-      <div class="math-cell-num">2,300</div>
+      <div class="math-cell-num">2,100</div>
       <div class="math-cell-unit">基础+运动</div>
     </div>
     <div class="math-cell">
       <div class="math-cell-label">摄入目标</div>
-      <div class="math-cell-num">1,050</div>
+      <div class="math-cell-num">1,000</div>
       <div class="math-cell-unit">KCAL</div>
     </div>
   </div>
@@ -1069,18 +1120,18 @@ footer {
     </div>
     <div class="math-cell input-cell-dark">
       <div class="math-cell-label">实际消耗</div>
-      <input type="number" id="m-burn" placeholder="2300" inputmode="numeric" class="math-input">
+      <input type="number" id="m-burn" placeholder="2100" inputmode="numeric" class="math-input">
       <div class="math-cell-unit">KCAL</div>
     </div>
     <div class="math-cell input-cell-dark">
       <div class="math-cell-label">实际摄入</div>
-      <input type="number" id="m-kcal" placeholder="1050" inputmode="numeric" class="math-input">
+      <input type="number" id="m-kcal" placeholder="1000" inputmode="numeric" class="math-input">
       <div class="math-cell-unit">KCAL</div>
     </div>
   </div>
   
   <div class="math-pill">
-    累计实际缺口 <b id="total-deficit">0</b> kcal · 进度 <b id="deficit-progress">0%</b> / 38,500 kcal (5kg)
+    累计实际缺口 <b id="total-deficit">0</b> kcal · 进度 <b id="deficit-progress">0%</b> / 34,100 kcal (-4.4kg)
   </div>
 </div>
 
@@ -1211,6 +1262,21 @@ footer {
   </div>
 </div>
 
+<!-- ====== DEFICIT CHART ====== -->
+<div class="card">
+  <div class="card-title"><span class="emoji">🔥</span>累积缺口</div>
+  <div class="card-subtitle">每日缺口柱 + 累积缺口线 · 目标 34,100 (-4.4kg)</div>
+  <div class="deficit-legend">
+    <span class="legend-item"><span class="legend-bar"></span>每日缺口</span>
+    <span class="legend-item"><span class="legend-line"></span>累积缺口</span>
+    <span class="legend-item"><span class="legend-target"></span>目标线</span>
+  </div>
+  <div class="chart-container">
+    <svg class="chart-svg" id="deficit-chart" viewBox="0 0 320 200" preserveAspectRatio="none"></svg>
+    <div class="no-data" id="deficit-empty" style="display:none;">填了「实际消耗」+「实际摄入」就有图 · 🔥</div>
+  </div>
+</div>
+
 <!-- ====== MILESTONES ====== -->
 <div class="card">
   <div class="card-title"><span class="emoji">🎖️</span>里程碑</div>
@@ -1271,42 +1337,42 @@ const START_WEIGHT = 57.0;
 const START_BODYFAT = 31.0;
 const TARGET_WEIGHT = 52.0;
 const TARGET_BODYFAT = 22.0;
-const TDEE = 2300;
-const TARGET_KCAL = 1050;
+const TDEE = 2100;
+const TARGET_KCAL = 1000;
 const TARGET_DEFICIT = TDEE - TARGET_KCAL;
 
 const QUOTES = [
-  '种一棵树最好的时间是十年前,其次是现在。',
-  '日拱一卒,功不唐捐。',
-  'You\'re the gardener. Be patient with the bloom.',
-  '小步而不停步,这就是节奏。',
-  'Discipline is choosing what you want most over what you want now.',
-  '花期不同,各自精彩。',
-  '今天的选择,决定 31 天后的样子。',
-  'The body achieves what the mind believes.',
-  '你比想象中更有力量。',
-  'Slow is smooth. Smooth is fast.',
-  '心如止水,身似流云。',
-  'Consistency beats intensity, every time.',
-  '不需要完美,只需要不停。',
-  'Trust the process, love the journey.',
-  '今日所付出 · 皆为未来铺路。',
-  '睡眠是减脂的隐藏王牌。',
-  '蛋白吃够 · 肌肉就在 · 形态才美。',
-  '不饿不是减脂目标 · 健康才是。',
-  '6/25 美国行,我等着那个轻盈的我。',
-  '皮质醇下降 · 体重才会下降。',
-  '空腹训练 · 燃脂最猛。',
-  '不吃晚饭 · 16 小时给身体修复。',
-  '热水澡是平价的助眠神器。',
-  '4-7-8 呼吸 · 5 分钟降心率。',
-  '21:00 关灯 · 22:00 闭眼 · 5:30 起床。',
-  '镁是入睡困难者的好朋友。',
-  '今天没完美 · 明天接着走就行。',
-  '不要量体重每天 · 量趋势就好。',
-  '一周称两次 · 一个月看趋势。',
-  '美国行倒计时,你正在变好。',
-  '5 月只做一件事:轻盈起来。'
+  '今天比昨天更轻一点 · 一点就够。',                  // Day 1
+  '阳光会照进来 · 早起的人最先收到。',                // Day 2
+  '你不是在节食 · 你是在重新认识自己的身体。',        // Day 3
+  '花期不同 · 各自精彩 · 你的高光在 6/25。',          // Day 4
+  '一杯水 · 一次深呼吸 · 一个微笑 · 今天就开了。',     // Day 5
+  '蛋白 + 睡眠 + 训练 = 你的复利公式。',              // Day 6
+  '一周了 · 你比上周更稳了。',                       // Day 7
+  '镜子里的人正在悄悄变美 · 别替她着急。',            // Day 8
+  '今天难一点 · 明天就轻一点。',                      // Day 9
+  '你的精神状态 · 正在被 22:00 闭眼治愈。',           // Day 10
+  '低卡不是惩罚 · 是给身体的礼物。',                  // Day 11
+  '能量满格的早晨 · 是奖励 · 是选择。',                // Day 12
+  '别看一天的体重 · 看一周的曲线。',                   // Day 13
+  '两周了 · 你已经在轨道上了 ✨',                     // Day 14
+  '最难的部分已经过去 · 接下来是惯性。',              // Day 15
+  '美国行的你 · 已经能想象了 · 那就走过去。',          // Day 16
+  '你不是在「忍」· 你是在「拥有」一种新生活。',        // Day 17
+  '酸面包 + 鸡蛋 + 牛油果 · 健康的人这样吃早餐。',     // Day 18
+  '减下去的不只是体重 · 是你对自己的怀疑。',          // Day 19
+  '过半了 🌸 你已经赢过 5/1 那天的自己。',            // Day 20
+  '今天的选择 · 决定 6/25 那天的样子。',              // Day 21
+  '三周稳定执行的人 · 整个世界都会奖励她。',          // Day 22
+  '阳光、咖啡、轻盈的步伐 · 这就是你的日常。',         // Day 23
+  '你不需要谁的允许 · 来变得更好。',                  // Day 24
+  '冲刺的时候到了 · 但温柔地冲。',                    // Day 25
+  '剩下不到一周 · 全力但不焦虑。',                    // Day 26
+  '体重秤上的数字 · 永远小于你的能量。',              // Day 27
+  '回头看 5/1 的自己 · 一定会笑出来。',                // Day 28
+  '蛋白吃够 · 你才是真的「瘦得好看」。',              // Day 29
+  '明天就是收尾 · 你做到了 🌷',                       // Day 30
+  '5 月 31 天 · 你证明了一件事:你能做到。'           // Day 31
 ];
 
 const CHECKLIST_TEMPLATE = [
@@ -1670,6 +1736,112 @@ function showToast() {
 }
 
 // ===== HEADER =====
+// ===== 7 日配色 + emoji 主题(周一 → 周日)=====
+const DAY_THEMES = [
+  // 周一 · 樱花粉(柔和起步)
+  { 
+    name:'樱花粉 🌸',
+    emojiSet:['🌸','🌷','🌺','💗','✨'],
+    bg:[
+      'radial-gradient(circle at 8% 8%, rgba(255, 192, 203, 0.30) 0%, transparent 40%)',
+      'radial-gradient(circle at 92% 18%, rgba(255, 182, 193, 0.25) 0%, transparent 40%)',
+      'radial-gradient(circle at 15% 70%, rgba(255, 218, 221, 0.30) 0%, transparent 50%)',
+      'radial-gradient(circle at 88% 85%, rgba(255, 192, 203, 0.20) 0%, transparent 40%)'
+    ], base:'#FFF5F7'
+  },
+  // 周二 · 海洋蓝(清爽活力)
+  { 
+    name:'海洋蓝 💙',
+    emojiSet:['🌊','💙','🐚','☁️','✨'],
+    bg:[
+      'radial-gradient(circle at 8% 8%, rgba(135, 206, 235, 0.28) 0%, transparent 40%)',
+      'radial-gradient(circle at 92% 18%, rgba(176, 224, 230, 0.30) 0%, transparent 40%)',
+      'radial-gradient(circle at 15% 70%, rgba(173, 216, 230, 0.30) 0%, transparent 50%)',
+      'radial-gradient(circle at 88% 85%, rgba(135, 206, 250, 0.20) 0%, transparent 40%)'
+    ], base:'#F0F8FF'
+  },
+  // 周三 · 抹茶绿(清新平衡)
+  { 
+    name:'抹茶绿 🌿',
+    emojiSet:['🌿','🍃','🌱','🍀','💚'],
+    bg:[
+      'radial-gradient(circle at 8% 8%, rgba(144, 238, 144, 0.25) 0%, transparent 40%)',
+      'radial-gradient(circle at 92% 18%, rgba(152, 251, 152, 0.28) 0%, transparent 40%)',
+      'radial-gradient(circle at 15% 70%, rgba(143, 188, 143, 0.25) 0%, transparent 50%)',
+      'radial-gradient(circle at 88% 85%, rgba(176, 224, 176, 0.22) 0%, transparent 40%)'
+    ], base:'#F0FFF4'
+  },
+  // 周四 · 薰衣草(优雅梦幻 · 普罗旺斯南法风)
+  { 
+    name:'薰衣草 🪻',
+    emojiSet:['🪻','💜','🏰','✨','🍇'],
+    bg:[
+      'radial-gradient(circle at 8% 8%, rgba(216, 191, 216, 0.30) 0%, transparent 40%)',
+      'radial-gradient(circle at 92% 18%, rgba(221, 160, 221, 0.25) 0%, transparent 40%)',
+      'radial-gradient(circle at 15% 70%, rgba(230, 230, 250, 0.35) 0%, transparent 50%)',
+      'radial-gradient(circle at 88% 85%, rgba(218, 191, 230, 0.25) 0%, transparent 40%)'
+    ], base:'#F8F4FF'
+  },
+  // 周五 · 阳光黄(周末前的喜悦)
+  { 
+    name:'阳光黄 ☀️',
+    emojiSet:['☀️','🌻','🍋','✨','🌟'],
+    bg:[
+      'radial-gradient(circle at 8% 8%, rgba(255, 223, 0, 0.22) 0%, transparent 40%)',
+      'radial-gradient(circle at 92% 18%, rgba(255, 215, 0, 0.20) 0%, transparent 40%)',
+      'radial-gradient(circle at 15% 70%, rgba(255, 250, 205, 0.45) 0%, transparent 50%)',
+      'radial-gradient(circle at 88% 85%, rgba(255, 239, 213, 0.30) 0%, transparent 40%)'
+    ], base:'#FFFEF5'
+  },
+  // 周六 · 桃子色(周末犒劳)
+  { 
+    name:'桃子色 🍑',
+    emojiSet:['🍑','🌅','🌷','✨','🍊'],
+    bg:[
+      'radial-gradient(circle at 8% 8%, rgba(255, 218, 185, 0.32) 0%, transparent 40%)',
+      'radial-gradient(circle at 92% 18%, rgba(255, 192, 159, 0.28) 0%, transparent 40%)',
+      'radial-gradient(circle at 15% 70%, rgba(255, 228, 196, 0.35) 0%, transparent 50%)',
+      'radial-gradient(circle at 88% 85%, rgba(255, 211, 168, 0.25) 0%, transparent 40%)'
+    ], base:'#FFF8F0'
+  },
+  // 周日 · 玫瑰金(温柔休憩)
+  { 
+    name:'玫瑰金 🌹',
+    emojiSet:['🌹','💗','🌸','✨','🍷'],
+    bg:[
+      'radial-gradient(circle at 8% 8%, rgba(232, 180, 184, 0.30) 0%, transparent 40%)',
+      'radial-gradient(circle at 92% 18%, rgba(244, 194, 194, 0.28) 0%, transparent 40%)',
+      'radial-gradient(circle at 15% 70%, rgba(255, 218, 220, 0.32) 0%, transparent 50%)',
+      'radial-gradient(circle at 88% 85%, rgba(217, 165, 165, 0.22) 0%, transparent 40%)'
+    ], base:'#FFF5F5'
+  }
+];
+
+function applyDayTheme() {
+  const today = new Date();
+  const jsDay = today.getDay(); // 周日=0, 周一=1...
+  const themeIdx = (jsDay + 6) % 7; // 周一=0, ... 周日=6
+  const theme = DAY_THEMES[themeIdx];
+  if (!theme) return;
+  
+  // 背景色应用
+  document.body.style.background = theme.base;
+  document.body.style.backgroundImage = theme.bg.join(', ');
+  document.body.style.backgroundAttachment = 'fixed';
+  
+  // 替换 header 的装饰 emoji(5 个位置 ↔ 5 个 emoji)
+  const decoEls = document.querySelectorAll('.emoji-deco');
+  if (decoEls.length && theme.emojiSet.length) {
+    decoEls.forEach((el, i) => {
+      el.textContent = theme.emojiSet[i % theme.emojiSet.length];
+    });
+  }
+  
+  // 主题名徽章
+  const badge = document.getElementById('theme-badge');
+  if (badge) badge.textContent = '· ' + theme.name + ' ·';
+}
+
 function renderHeader() {
   const idx = dayIndex();
   const dayN = Math.max(1, Math.min(idx + 1, TOTAL_DAYS));
@@ -1680,9 +1852,12 @@ function renderHeader() {
   const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
   document.getElementById('date-line').textContent = `${dateStr} · ${weekdays[today.getDay()]}`;
   
-  // Daily quote (rotate)
-  const qIdx = (today.getDate() + today.getMonth()) % QUOTES.length;
+  // Daily quote — 按 dayIndex 取,每天严格对应一句
+  const qIdx = Math.max(0, Math.min(idx, QUOTES.length - 1));
   document.getElementById('quote').textContent = QUOTES[qIdx];
+  
+  // Apply daily theme color
+  applyDayTheme();
 }
 
 // ===== HERO PROGRESS =====
@@ -1746,9 +1921,12 @@ function renderMath() {
   document.getElementById('total-deficit').textContent = totalDef.toLocaleString();
   
   // 进度:38500 kcal = 5 kg 目标
-  const TARGET_DEFICIT_TOTAL = 38500;
+  const TARGET_DEFICIT_TOTAL = 34100;
   const pct = Math.max(0, Math.min(100, (totalDef / TARGET_DEFICIT_TOTAL) * 100));
   document.getElementById('deficit-progress').textContent = pct.toFixed(1) + '%';
+  
+  // 同步刷新累积缺口图
+  if (typeof renderDeficitChart === 'function') renderDeficitChart();
 }
 
 // ===== CHECKLIST =====
@@ -1832,7 +2010,12 @@ function bindMetricInputs() {
   ['weight','bodyfat','steps','kcal','protein','burn'].forEach(k => {
     const el = document.getElementById('m-' + k);
     if (!el) return;
-    if (day.m[k] !== undefined && day.m[k] !== '') el.value = day.m[k];
+    // 关键修复:新日期没数据时,显式清空 input.value
+    if (day.m[k] !== undefined && day.m[k] !== '' && day.m[k] !== null) {
+      el.value = day.m[k];
+    } else {
+      el.value = '';
+    }
     el.oninput = async () => {
       day.m[k] = el.value;
       await saveDay(ds, true);
@@ -1857,7 +2040,9 @@ function bindMetricInputs() {
   ['bedtime','waketime'].forEach(k => {
     const el = document.getElementById('m-' + k);
     if (!el) return;
+    // 关键修复:新日期没数据时,显式清空 time input.value
     if (day.m[k]) el.value = day.m[k];
+    else el.value = '';
     el.onchange = async () => {
       day.m[k] = el.value;
       // Auto-tick bedtime checklist if before 22:30
@@ -2241,6 +2426,192 @@ function renderChart() {
   });
 }
 
+// ===== DEFICIT CHART (Bar + Line combo) =====
+function renderDeficitChart() {
+  const svg = document.getElementById('deficit-chart');
+  const empty = document.getElementById('deficit-empty');
+  if (!svg) return;
+  svg.innerHTML = '';
+  
+  const TOTAL_TARGET = 34100; // -4.4kg
+  const TOTAL_DAYS_PLAN = TOTAL_DAYS;
+  
+  // 扫描整个计划范围(5/1 到 5/31)
+  const dates = [];
+  for (let i = 0; i < TOTAL_DAYS_PLAN; i++) {
+    const d = new Date(PLAN_START);
+    d.setDate(d.getDate() + i);
+    dates.push(fmtDate(d));
+  }
+  
+  // 计算每日缺口 + 累积缺口
+  const dailyDef = [];
+  let cumulative = 0;
+  const cumulativeArr = [];
+  let lastFilledIdx = -1;
+  
+  dates.forEach((ds, i) => {
+    const day = appData[ds];
+    const burn = day ? +day.m.burn : 0;
+    const kcal = day ? +day.m.kcal : 0;
+    const def = (burn > 0 && kcal > 0) ? (burn - kcal) : 0;
+    if (def > 0) lastFilledIdx = i;
+    dailyDef.push(def);
+    cumulative += def;
+    cumulativeArr.push(cumulative);
+  });
+  
+  if (lastFilledIdx < 0) {
+    empty.style.display = 'block';
+    svg.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  svg.style.display = 'block';
+  
+  // viewBox: 320 × 200
+  const W = 320, H = 200, PAD_L = 32, PAD_R = 14, PAD_T = 22, PAD_B = 26;
+  const chartW = W - PAD_L - PAD_R;
+  const chartH = H - PAD_T - PAD_B;
+  const xStep = chartW / TOTAL_DAYS_PLAN;
+  
+  const yMax = TOTAL_TARGET;
+  const yMaxBar = Math.max(2000, Math.max(...dailyDef) * 1.3);
+  
+  // Background grid
+  for (let i = 0; i <= 4; i++) {
+    const y = PAD_T + chartH * i / 4;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', PAD_L); line.setAttribute('x2', W - PAD_R);
+    line.setAttribute('y1', y); line.setAttribute('y2', y);
+    line.setAttribute('stroke', '#E5E7EB'); line.setAttribute('stroke-width', '0.5');
+    line.setAttribute('stroke-dasharray', '2 3');
+    svg.appendChild(line);
+    
+    // Y axis label (cumulative scale)
+    const labelVal = Math.round(yMax * (4 - i) / 4 / 1000);
+    const ylbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    ylbl.setAttribute('x', PAD_L - 4); ylbl.setAttribute('y', y + 3);
+    ylbl.setAttribute('fill', '#9CA3AF'); ylbl.setAttribute('font-size', '8');
+    ylbl.setAttribute('text-anchor', 'end'); ylbl.setAttribute('font-family', 'DM Mono, monospace');
+    ylbl.textContent = labelVal + 'k';
+    svg.appendChild(ylbl);
+  }
+  
+  // Target line (38.5k)
+  const targetY = PAD_T;
+  const tl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  tl.setAttribute('x1', PAD_L); tl.setAttribute('x2', W - PAD_R);
+  tl.setAttribute('y1', targetY); tl.setAttribute('y2', targetY);
+  tl.setAttribute('stroke', '#06D6A0'); tl.setAttribute('stroke-width', '1.5');
+  tl.setAttribute('stroke-dasharray', '4 3');
+  svg.appendChild(tl);
+  
+  const ttxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  ttxt.setAttribute('x', W - PAD_R - 2); ttxt.setAttribute('y', targetY - 4);
+  ttxt.setAttribute('fill', '#06D6A0'); ttxt.setAttribute('font-size', '8');
+  ttxt.setAttribute('text-anchor', 'end'); ttxt.setAttribute('font-family', 'DM Mono, monospace');
+  ttxt.setAttribute('font-weight', '700');
+  ttxt.textContent = '🎯 34.1k · 4.4kg';
+  svg.appendChild(ttxt);
+  
+  // Bar gradient
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  defs.innerHTML = `
+    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFA947" />
+      <stop offset="100%" stop-color="#FF6B47" />
+    </linearGradient>
+  `;
+  svg.appendChild(defs);
+  
+  // Bars (每日缺口)
+  const barH = chartH * 0.45;
+  dailyDef.forEach((def, i) => {
+    if (def <= 0) return;
+    const x = PAD_L + i * xStep + xStep * 0.15;
+    const w = Math.max(1.5, xStep * 0.7);
+    const h = (def / yMaxBar) * barH;
+    const y = PAD_T + chartH - h;
+    
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', x); rect.setAttribute('y', y);
+    rect.setAttribute('width', w); rect.setAttribute('height', h);
+    rect.setAttribute('fill', 'url(#barGrad)');
+    rect.setAttribute('rx', '1.5');
+    svg.appendChild(rect);
+  });
+  
+  // Cumulative line points (only filled days)
+  const linePoints = [];
+  for (let i = 0; i <= lastFilledIdx; i++) {
+    const x = PAD_L + i * xStep + xStep / 2;
+    const y = PAD_T + chartH * (yMax - cumulativeArr[i]) / yMax;
+    linePoints.push({ x, y, cum: cumulativeArr[i], i });
+  }
+  
+  if (linePoints.length >= 2) {
+    const path = linePoints.map((p, i) => (i === 0 ? 'M' : 'L') + p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' ');
+    
+    // Area fill
+    const areaPath = path + ` L ${linePoints[linePoints.length-1].x.toFixed(1)},${(PAD_T + chartH).toFixed(1)} L ${linePoints[0].x.toFixed(1)},${(PAD_T + chartH).toFixed(1)} Z`;
+    const area = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    area.setAttribute('d', areaPath);
+    area.setAttribute('fill', 'rgba(6, 214, 160, 0.15)');
+    svg.appendChild(area);
+    
+    // Line
+    const pl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    pl.setAttribute('d', path);
+    pl.setAttribute('fill', 'none');
+    pl.setAttribute('stroke', '#06D6A0');
+    pl.setAttribute('stroke-width', '2.5');
+    pl.setAttribute('stroke-linejoin', 'round');
+    pl.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(pl);
+  }
+  
+  // Dots (only on filled days)
+  linePoints.forEach((pt, i) => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y);
+    c.setAttribute('r', i === linePoints.length - 1 ? '3.5' : '2.5');
+    c.setAttribute('fill', '#06D6A0');
+    c.setAttribute('stroke', 'white');
+    c.setAttribute('stroke-width', '1.3');
+    svg.appendChild(c);
+  });
+  
+  // Latest cumulative label
+  if (linePoints.length > 0) {
+    const last = linePoints[linePoints.length - 1];
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lbl.setAttribute('x', last.x);
+    lbl.setAttribute('y', Math.max(PAD_T + 12, last.y - 8));
+    lbl.setAttribute('fill', '#04A87E');
+    lbl.setAttribute('font-size', '10');
+    lbl.setAttribute('text-anchor', 'middle');
+    lbl.setAttribute('font-family', 'DM Mono, monospace');
+    lbl.setAttribute('font-weight', '700');
+    lbl.textContent = (last.cum / 1000).toFixed(1) + 'k';
+    svg.appendChild(lbl);
+  }
+  
+  // X axis date labels — 每 7 天一个 (5/1, 5/8, 5/15, 5/22, 5/29)
+  [0, 7, 14, 21, 28].forEach(i => {
+    if (i >= TOTAL_DAYS_PLAN) return;
+    const x = PAD_L + i * xStep + xStep / 2;
+    const dt = new Date(PLAN_START);
+    dt.setDate(dt.getDate() + i);
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lbl.setAttribute('x', x); lbl.setAttribute('y', H - 8);
+    lbl.setAttribute('fill', '#9CA3AF'); lbl.setAttribute('font-size', '8');
+    lbl.setAttribute('text-anchor', 'middle'); lbl.setAttribute('font-family', 'DM Mono, monospace');
+    lbl.textContent = (dt.getMonth()+1) + '/' + dt.getDate();
+    svg.appendChild(lbl);
+  });
+}
+
 // ===== URL PARAMS (manual sync support) =====
 async function applyURLParams() {
   const params = new URLSearchParams(location.search);
@@ -2326,14 +2697,43 @@ function renderAll() {
   renderStats();
   renderMilestones();
   renderChart();
+  renderDeficitChart();
 }
 
 // ===== INIT =====
+let _lastSeenDate = null;
+
+async function checkDateChange() {
+  const today = todayStr();
+  if (_lastSeenDate && _lastSeenDate !== today) {
+    // 日期变了 — 重新加载数据 + 重新渲染所有
+    console.log('日期变更:', _lastSeenDate, '→', today);
+    await loadAll();
+    renderAll();
+    bindChartTabs();
+  }
+  _lastSeenDate = today;
+}
+
 (async () => {
   await loadAll();
   await applyURLParams();
   renderAll();
   bindChartTabs();
+  _lastSeenDate = todayStr();
+  
+  // 每 60 秒检查一次日期是否变了(午夜时还开着 app 的情况)
+  setInterval(checkDateChange, 60 * 1000);
+  
+  // 关键:用户从主屏幕重开 PWA / app 切回前台时,检测日期变化
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      checkDateChange();
+    }
+  });
+  
+  // 兼容:窗口聚焦时也检测一次
+  window.addEventListener('focus', checkDateChange);
 })();
 </script>
 
