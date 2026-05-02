@@ -292,6 +292,38 @@ h1 .accent { color: var(--coral); font-style: italic; }
   animation: pulse 1.6s ease-in-out infinite;
 }
 .flower:active { transform: scale(0.9) rotate(8deg); }
+.flower.editing::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 2.5px solid var(--purple);
+  border-radius: 16px;
+}
+.edit-date-banner {
+  background: linear-gradient(135deg, #DCD5FF, #C7B6FF);
+  color: #4A2D8A;
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.edit-date-banner .back-today {
+  background: rgba(255,255,255,0.85);
+  color: #6A3BA8;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
 
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -1083,7 +1115,8 @@ footer {
 <!-- ====== GARDEN ====== -->
 <div class="card">
   <div class="card-title"><span class="emoji">🌸</span>三十一朵花园</div>
-  <div class="card-subtitle">每完成一日 · 一朵绽放</div>
+  <div class="card-subtitle">每完成一日 · 一朵绽放 · 点击任意花朵补录那天</div>
+  <div id="edit-date-banner" class="edit-date-banner" style="display:none;"></div>
   <div class="garden" id="garden"></div>
 </div>
 
@@ -1706,6 +1739,26 @@ async function saveDay(dateStr, silent) {
   } catch(e) {}
 }
 
+// ===== 一次性补录 5/1 数据(只在该日没数据/没补过时执行)=====
+async function backfillMay1() {
+  const ds = '2026-05-01';
+  const day = getDay(ds);
+  if (day._backfilled) return; // 已经补过,不重复
+  // 只填空值,不覆盖用户已有的
+  if (!day.m.weight)  day.m.weight  = '57.25';
+  if (!day.m.bodyfat) day.m.bodyfat = '31';
+  if (!day.m.steps)   day.m.steps   = '13123';
+  if (!day.m.kcal)    day.m.kcal    = '1000';
+  if (!day.m.burn)    day.m.burn    = '1913';
+  if (!day.m.protein) day.m.protein = '80';
+  if (!day.train.run) day.train.run = true;
+  // 自动勾选对应打卡项(跟原代码逻辑一致)
+  if (day.check.training === undefined) day.check.training = true;
+  if (day.check.protein === undefined)  day.check.protein  = true;
+  day._backfilled = true;
+  await saveDay(ds, true);
+}
+
 function fmtDate(d) {
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
@@ -1718,6 +1771,39 @@ function dayIndex() {
 }
 
 function todayStr() { return fmtDate(new Date()); }
+
+// ===== EDIT DATE (花园点击切换) =====
+// null = 跟随今天;否则编辑指定日期(yyyy-mm-dd 字符串)
+let currentEditDate = null;
+function editDateStr() { return currentEditDate || todayStr(); }
+function isEditingPast() { return currentEditDate && currentEditDate !== todayStr(); }
+function backToToday() {
+  currentEditDate = null;
+  renderAll();
+}
+function pickEditDate(dateStr) {
+  // 不允许点未来日(没意义)
+  const today = todayStr();
+  if (dateStr > today) return;
+  currentEditDate = (dateStr === today) ? null : dateStr;
+  renderAll();
+}
+function renderEditDateBanner() {
+  const banner = document.getElementById('edit-date-banner');
+  if (!banner) return;
+  if (!isEditingPast()) {
+    banner.style.display = 'none';
+    return;
+  }
+  const [y, m, d] = currentEditDate.split('-');
+  const dt = new Date(+y, +m - 1, +d);
+  const wd = ['周日','周一','周二','周三','周四','周五','周六'][dt.getDay()];
+  banner.innerHTML =
+    `<span>📝 正在补录 · ${+m}月${+d}日 ${wd}</span>` +
+    `<span class="back-today">回到今天 ↩</span>`;
+  banner.onclick = backToToday;
+  banner.style.display = 'flex';
+}
 
 function getDay(dateStr) {
   if (!appData[dateStr]) appData[dateStr] = { check: {}, m: {}, train: {}, ritual: {} };
@@ -1881,6 +1967,7 @@ function renderGarden() {
   const grid = document.getElementById('garden');
   grid.innerHTML = '';
   const idx = dayIndex();
+  const editDs = editDateStr();
   for (let i = 0; i < TOTAL_DAYS; i++) {
     const d = new Date(PLAN_START);
     d.setDate(d.getDate() + i);
@@ -1888,18 +1975,25 @@ function renderGarden() {
     const day = appData[ds];
     const isPast = i < idx;
     const isToday = i === idx;
+    const isEditing = currentEditDate && ds === editDs;
     const completed = day && Object.values(day.check || {}).filter(Boolean).length >= 3;
     
     const flower = document.createElement('div');
-    flower.className = 'flower' + (completed ? ' bloomed' : '') + (isToday ? ' today' : '');
+    flower.className = 'flower' + (completed ? ' bloomed' : '') + (isToday ? ' today' : '') + (isEditing ? ' editing' : '');
     flower.textContent = completed ? ['🌸','🌷','🌻','🌺','🌹','🌼','💐','🪷','🪻'][i % 9] : '·';
+    // 点击切换到那一天的编辑模式(未来日跳过)
+    if (i <= idx) {
+      flower.style.cursor = 'pointer';
+      flower.onclick = () => pickEditDate(ds);
+    }
     grid.appendChild(flower);
   }
+  renderEditDateBanner();
 }
 
 // ===== MATH CARD =====
 function renderMath() {
-  const ds = todayStr();
+  const ds = editDateStr();
   const day = getDay(ds);
   const burn = +day.m.burn || 0;
   const kcal = +day.m.kcal || 0;
@@ -1933,7 +2027,7 @@ function renderMath() {
 function renderChecklist() {
   const list = document.getElementById('checklist');
   list.innerHTML = '';
-  const ds = todayStr();
+  const ds = editDateStr();
   const day = getDay(ds);
   
   CHECKLIST_TEMPLATE.forEach(item => {
@@ -1961,7 +2055,7 @@ function renderChecklist() {
 
 // ===== TRAINING =====
 function renderTraining() {
-  const ds = todayStr();
+  const ds = editDateStr();
   const day = getDay(ds);
   document.querySelectorAll('.training-chip').forEach(chip => {
     const t = chip.dataset.train;
@@ -1981,7 +2075,7 @@ function renderTraining() {
 
 // ===== STARS =====
 function renderStars() {
-  const ds = todayStr();
+  const ds = editDateStr();
   const day = getDay(ds);
   document.querySelectorAll('.stars').forEach(holder => {
     const target = holder.dataset.target;
@@ -2004,7 +2098,7 @@ function renderStars() {
 
 // ===== METRIC INPUTS =====
 function bindMetricInputs() {
-  const ds = todayStr();
+  const ds = editDateStr();
   const day = getDay(ds);
   
   ['weight','bodyfat','steps','kcal','protein','burn'].forEach(k => {
@@ -2070,7 +2164,7 @@ function bindMetricInputs() {
 function renderRitual() {
   const list = document.getElementById('ritual-list');
   list.innerHTML = '';
-  const ds = todayStr();
+  const ds = editDateStr();
   const day = getDay(ds);
   
   RITUAL_TEMPLATE.forEach(item => {
@@ -2708,6 +2802,7 @@ async function checkDateChange() {
   if (_lastSeenDate && _lastSeenDate !== today) {
     // 日期变了 — 重新加载数据 + 重新渲染所有
     console.log('日期变更:', _lastSeenDate, '→', today);
+    currentEditDate = null; // 跨天了,自动回到今天
     await loadAll();
     renderAll();
     bindChartTabs();
@@ -2717,6 +2812,7 @@ async function checkDateChange() {
 
 (async () => {
   await loadAll();
+  await backfillMay1();
   await applyURLParams();
   renderAll();
   bindChartTabs();
