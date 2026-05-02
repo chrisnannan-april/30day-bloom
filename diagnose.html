@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔍 数据诊断 · Bloom in May</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #FFF8F0 0%, #FFE3E0 100%);
+    min-height: 100vh;
+    padding: 20px 16px 60px;
+    color: #1F2937;
+  }
+  .container { max-width: 480px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: #B83A1A;
+  }
+  .sub {
+    text-align: center;
+    color: #6B7280;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #FF6B47;
+  }
+  .status {
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .status.ok { background: #D1FAE5; color: #065F46; border-left: 4px solid #06D6A0; }
+  .status.warn { background: #FEF3C7; color: #92400E; border-left: 4px solid #FFA947; }
+  .status.err { background: #FEE2E2; color: #991B1B; border-left: 4px solid #EF4444; }
+  .day-entry {
+    background: #FFF8F0;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .day-date {
+    font-weight: 700;
+    color: #FF6B47;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .day-data {
+    color: #374151;
+    word-break: break-all;
+  }
+  .day-data b { color: #1F2937; }
+  pre {
+    background: #F3F4F6;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+  button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .btn-primary { background: #FF6B47; color: white; }
+  .btn-secondary { background: #FEF3C7; color: #92400E; }
+  .btn-danger { background: #FEE2E2; color: #991B1B; }
+  .empty {
+    text-align: center;
+    color: #9CA3AF;
+    padding: 30px 16px;
+    font-style: italic;
+  }
+  .meta {
+    font-size: 11px;
+    color: #9CA3AF;
+    margin-top: 6px;
+    font-family: 'SF Mono', Monaco, monospace;
+  }
+  .label {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #FF6B47;
+    color: white;
+    border-radius: 6px;
+    font-size: 11px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔍 数据诊断</h1>
+  <div class="sub">检查 Bloom in May 看板的所有数据</div>
+  
+  <div class="card">
+    <div class="card-title">📊 浏览器存储状态</div>
+    <div id="status-box"></div>
+  </div>
+  
+  <div class="card">
+    <div class="card-title">📅 所有日期数据(按日期排序)</div>
+    <div id="data-box">
+      <div class="empty">检测中...</div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-title">⚙️ 操作</div>
+    <button class="btn-primary" onclick="exportData()">📥 导出全部数据为 JSON</button>
+    <button class="btn-secondary" onclick="copyToClipboard()">📋 复制数据到剪贴板</button>
+    <p class="meta" style="margin-top:14px;">如果数据真的丢了,导出 / 复制功能会显示空。如果数据还在,就能保存一份备份再继续用 app。</p>
+  </div>
+  
+  <div class="card">
+    <div class="card-title">📍 当前环境信息</div>
+    <pre id="env-info"></pre>
+  </div>
+</div>
+
+<script>
+let allData = {};
+
+async function checkData() {
+  const statusBox = document.getElementById('status-box');
+  const dataBox = document.getElementById('data-box');
+  
+  // 检查 window.storage 是否可用
+  if (!window.storage) {
+    // 模拟开发环境 — 用 IndexedDB 直接查
+    statusBox.innerHTML = '<div class="status warn">⚠️ window.storage 不可用<br>这是 Claude.ai 的存储 API。请在你部署的 GitHub Pages 上访问这个工具(同一个域名下)。</div>';
+    
+    // 仍然尝试查标准 IndexedDB
+    await tryStandardIndexedDB();
+    return;
+  }
+  
+  try {
+    // 列出所有 day:* keys
+    const result = await window.storage.list('day:');
+    if (!result || !result.keys || result.keys.length === 0) {
+      statusBox.innerHTML = '<div class="status err">❌ <b>数据库里没找到任何 day: 数据</b><br>可能原因:<br>1. 这是新的浏览器(还没填过数据)<br>2. Safari 网站数据被清除<br>3. 在不同浏览器/隐私模式下打开</div>';
+      dataBox.innerHTML = '<div class="empty">没有数据</div>';
+      return;
+    }
+    
+    statusBox.innerHTML = `<div class="status ok">✅ <b>找到 ${result.keys.length} 天的数据</b><br>数据完好,在浏览器存储里。</div>`;
+    
+    // 读取每个 key 的内容
+    const entries = [];
+    for (const key of result.keys) {
+      try {
+        const v = await window.storage.get(key);
+        if (v && v.value) {
+          const parsed = JSON.parse(v.value);
+          entries.push({ key, data: parsed });
+          allData[key] = parsed;
+        }
+      } catch (e) {
+        entries.push({ key, error: e.message });
+      }
+    }
+    
+    // 按日期排序
+    entries.sort((a, b) => a.key.localeCompare(b.key));
+    
+    // 渲染
+    dataBox.innerHTML = '';
+    entries.forEach(entry => {
+      const div = document.createElement('div');
+      div.className = 'day-entry';
+      
+      const date = entry.key.replace('day:', '');
+      const today = new Date(date);
+      const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
+      const wd = weekdays[today.getDay()];
+      
+      let html = `<div class="day-date">📅 ${date} · ${wd}</div>`;
+      
+      if (entry.error) {
+        html += `<div class="day-data" style="color:#991B1B;">读取错误:${entry.error}</div>`;
+      } else {
+        const m = entry.data.m || {};
+        const check = entry.data.check || {};
+        const train = entry.data.train || {};
+        const ritual = entry.data.ritual || {};
+        
+        const metricStrs = [];
+        if (m.weight) metricStrs.push(`体重 <b>${m.weight}kg</b>`);
+        if (m.bodyfat) metricStrs.push(`体脂 <b>${m.bodyfat}%</b>`);
+        if (m.kcal) metricStrs.push(`摄入 <b>${m.kcal}</b>`);
+        if (m.burn) metricStrs.push(`消耗 <b>${m.burn}</b>`);
+        if (m.protein) metricStrs.push(`蛋白 <b>${m.protein}g</b>`);
+        if (m.steps) metricStrs.push(`步数 <b>${m.steps}</b>`);
+        if (m.bedtime) metricStrs.push(`上床 <b>${m.bedtime}</b>`);
+        if (m.waketime) metricStrs.push(`起床 <b>${m.waketime}</b>`);
+        if (m.sleephard) metricStrs.push(`入睡难度 <b>${m.sleephard}/5</b>`);
+        if (m.energy) metricStrs.push(`能量 <b>${m.energy}/5</b>`);
+        
+        const checkCount = Object.values(check).filter(Boolean).length;
+        const ritualCount = Object.values(ritual).filter(Boolean).length;
+        const trainList = Object.entries(train).filter(([k,v]) => v).map(([k]) => k);
+        
+        html += `<div class="day-data">`;
+        if (metricStrs.length > 0) html += metricStrs.join(' · ') + '<br>';
+        else html += '<span style="color:#9CA3AF;">无数据填写</span><br>';
+        if (checkCount > 0) html += `打卡 <b>${checkCount}/5</b> · `;
+        if (trainList.length > 0) html += `训练 <b>${trainList.join('/')}</b> · `;
+        if (ritualCount > 0) html += `仪式 <b>${ritualCount}/7</b>`;
+        html += `</div>`;
+      }
+      
+      div.innerHTML = html;
+      dataBox.appendChild(div);
+    });
+    
+  } catch (err) {
+    statusBox.innerHTML = `<div class="status err">❌ 读取数据失败:${err.message}</div>`;
+  }
+}
+
+async function tryStandardIndexedDB() {
+  const dataBox = document.getElementById('data-box');
+  
+  if (!window.indexedDB) {
+    dataBox.innerHTML = '<div class="empty">浏览器不支持 IndexedDB</div>';
+    return;
+  }
+  
+  // 查所有 indexedDB 数据库
+  try {
+    const dbs = await indexedDB.databases();
+    if (dbs.length === 0) {
+      dataBox.innerHTML = '<div class="empty">没有任何 IndexedDB 数据库</div>';
+      return;
+    }
+    
+    let html = '<div style="font-size:12px;color:#6B7280;margin-bottom:10px;">找到的所有数据库:</div>';
+    dbs.forEach(db => {
+      html += `<div class="day-entry"><b>${db.name}</b> (version ${db.version})</div>`;
+    });
+    dataBox.innerHTML = html;
+  } catch (e) {
+    dataBox.innerHTML = `<div class="empty">无法列出数据库:${e.message}</div>`;
+  }
+}
+
+function exportData() {
+  if (Object.keys(allData).length === 0) {
+    alert('没有数据可以导出');
+    return;
+  }
+  const json = JSON.stringify(allData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `bloom-data-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyToClipboard() {
+  if (Object.keys(allData).length === 0) {
+    alert('没有数据可以复制');
+    return;
+  }
+  const json = JSON.stringify(allData, null, 2);
+  navigator.clipboard.writeText(json).then(() => {
+    alert('✓ 已复制到剪贴板');
+  }).catch(e => {
+    alert('复制失败:' + e.message);
+  });
+}
+
+function showEnvInfo() {
+  const info = {
+    URL: location.href,
+    Host: location.host,
+    'User Agent': navigator.userAgent.substring(0, 80) + '...',
+    'IndexedDB 可用': !!window.indexedDB,
+    'Storage API 可用': !!window.storage,
+    '当前日期': new Date().toString().substring(0, 33),
+    '存储模式': window.storage ? 'Claude Storage API' : 'Standard IndexedDB',
+    Cookie: navigator.cookieEnabled ? '启用' : '禁用'
+  };
+  let txt = '';
+  for (const [k, v] of Object.entries(info)) {
+    txt += k + ': ' + v + '\n';
+  }
+  document.getElementById('env-info').textContent = txt;
+}
+
+// 启动
+showEnvInfo();
+checkData();
+</script>
+</body>
+</html>
